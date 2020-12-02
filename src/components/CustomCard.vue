@@ -1,6 +1,7 @@
 <template>
   <div class="cc-card">
     <div align="right">
+      <b-button variant="primary" size="sm" @click="editItem()">Edit</b-button>
       <b-button variant="danger" size="sm" @click="deleteItem()">X</b-button>
     </div>
     <h3>{{data.title}}</h3>
@@ -24,7 +25,10 @@ export default {
     },
     deleteItem() {
       this.$emit('deleteItem', this.data);
-    }
+    },
+    editItem() {
+      this.$emit('editItem', this.data);
+    },
   }
 }
 </script>

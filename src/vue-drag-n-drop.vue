@@ -1,27 +1,6 @@
 <template>
   <div class="vue-drag-n-drop">
-    <h2 class="dd-title">
-      <b-button variant="success" @click="openNewItemModal()">New item</b-button>
-    </h2>
-    <!-- Modal new task -->
-    <b-modal ref="newItemModal" title="New item" centered @ok="newItem()">
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input v-model="item.title" type="text" class="form-control" id="title">
-      </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea v-model="item.description" class="form-control" id="description" rows="3"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="storyPoints">Story points</label>
-        <input v-model="item.sp" type="text" class="form-control" id="storyPoints">
-      </div>
-      <div class="form-group">
-        <label for="assigned">Assigned to</label>
-        <input v-model="item.assigned" type="text" class="form-control" id="assigned">
-      </div>
-    </b-modal>
+    
     <div class="dd-result-group">
       <div 
         v-for="(item,ind) in dropGroups"
@@ -32,7 +11,6 @@
         <Container 
           group-name="col"
           @drop="(e) => onCardDrop(item.name, e)"
-          @drag="console.log('dsfs')"
           :get-child-payload="getCardPayload(item.name)"
           drag-class="dd-card-ghost"
           drop-class="dd-card-ghost-drop"
@@ -54,7 +32,7 @@
 </template>
 
 <script>
-import { Container, Draggable } from "vue-smooth-dnd";
+import { Container, Draggable } from "./vue-smooth-dnd.js";
 import _ from 'lodash';
 import RequiredProps from './drag-n-drop-props.js';
 
@@ -65,7 +43,6 @@ export default {
 
   data: function () {
     return {
-      item: { title: null, description: null, sp: null, assigned: this.$parent.user.name},
       items:[],
       dropGroups: [],
     }
@@ -83,13 +60,6 @@ export default {
   },
 
   methods: {
-    newItem() {
-      this.$emit('newItem', Object.assign(this.item, {}));
-      this.item = {};
-    },
-    openNewItemModal() {
-      this.$refs.newItemModal.show();
-    },
     /** 
      * Even that runs when an item is dropped in the original list bucket.
      * @param {Object} dropResult Holds the value of what is dropped.

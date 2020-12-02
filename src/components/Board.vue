@@ -1,5 +1,29 @@
 <template>
   <div id="app">
+
+<h2 class="dd-title">
+      <b-button variant="success" @click="openNewItemModal()">New item</b-button>
+    </h2>
+    <!-- Modal new task -->
+    <b-modal ref="newItemModal" title="New item" centered @ok="newItem()" @hide="editItemFlag = false">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input v-model="item.title" type="text" class="form-control" id="title">
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea v-model="item.description" class="form-control" id="description" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="storyPoints">Story points</label>
+        <input v-model="item.sp" type="text" class="form-control" id="storyPoints">
+      </div>
+      <div class="form-group">
+        <label for="assigned">Assigned to</label>
+        <input v-model="item.assigned" type="text" class="form-control" id="assigned">
+      </div>
+    </b-modal>
+
     <drag-drop
       :user="user"
       :originalData="[]"
@@ -17,6 +41,7 @@
           :data="cardData"
           @done="doneMarked"
           @deleteItem="deleteItem($event)"
+          @editItem="editItem($event)"
         />
       </template>
     </drag-drop>
@@ -37,6 +62,8 @@ export default {
   },
   data() {
     return{
+      editItemFlag: false,
+      item: { title: null, description: null, sp: null, assigned: this.user.name},
       stories: [
         {
           title: 'Script BD',
@@ -77,6 +104,9 @@ export default {
     this.getItems();
   },
   methods: {
+    openNewItemModal() {
+      this.$refs.newItemModal.show();
+    },
     getItems() {
       this.socket.on('SYNC_BOARD', (data) => {
         console.log("SYNC_BOARD", data);
@@ -91,9 +121,9 @@ export default {
         this.socket.emit('UPDATE_BOARD', data);
         console.log("UPDATE_BOARD", data);
       },
-    newItem(item) {
-      console.log(this.board);
-      this.board[0].children.push(item);
+    newItem() {
+      if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
+      this.item = { title: null, description: null, sp: null, assigned: this.user.name};
       this.sendItem();
     },
     doneMarked(data) {
@@ -131,10 +161,14 @@ export default {
       if (indexFounded > -1) this.board[3].children.splice(indexFounded, 1);
       this.sendItem();
     },
+    editItem(item) {
+      this.editItemFlag = true;
+      this.item = Object.assign(item, {});
+      this.$refs.newItemModal.show();
+    },
     originalBucketDropEvent(result) {
       console.log("Original: ", result);
     },
-
     destinationBucketDropEvent(columnName, result) {
       console.log(columnName);
       if (columnName == 'Done') this.sendItem();
