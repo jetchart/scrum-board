@@ -15,6 +15,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "vue-smooth-dnd": "^0.8.1",
     "bootstrap-vue": "^2.9.0",
     "express": "^4.15.2",
     "jspdf": "^1.5.3",

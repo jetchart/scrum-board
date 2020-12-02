@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { Container, Draggable } from "./vue-smooth-dnd.js";
+import { Container, Draggable } from "vue-smooth-dnd";
 import _ from 'lodash';
 import RequiredProps from './drag-n-drop-props.js';
 
