@@ -181,6 +181,7 @@ export default {
 
 .dd-drop-container{
   width: 20vw;
+  min-width: 14em;
   display: inline-block;
   vertical-align: top;
   padding: 10px;
@@ -243,7 +244,7 @@ export default {
 }
 
 .item-title {
-  font-size: 1em;
+  font-size: 1.4em;
   font-weight: 800;
   text-transform: uppercase;
 }

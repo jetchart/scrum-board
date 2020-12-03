@@ -1,10 +1,12 @@
 <template>
   <div class="cc-card">
-    <div align="right">
-      <b-button variant="secondary" size="sm" @click="editItem()"><b-icon icon="pencil-square"></b-icon></b-button>
-      <b-button variant="danger" size="sm" @click="deleteItem()">X</b-button>
+    <div class="row">
+      <div class="col card-title" align="left">{{data.title}}</div>
+      <div class="col" align="right">
+        <b-icon class="h6 mb-0 pointer" icon="pencil-square" variant="primary" @click="editItem()"></b-icon>
+        <b-icon class="h6 mb-0 pointer" icon="x-square" variant="danger" @click="deleteItem()"></b-icon>
+      </div>
     </div>
-    <div class="card-title">{{data.title}}</div>
     <p>
       {{data.description}}
     </p>
@@ -45,7 +47,7 @@ export default {
 }
 
 .card-title {
-  font-size: 1em;
+  font-size: 1.1em;
   font-weight: 800;
 }
 
@@ -59,4 +61,9 @@ export default {
   color: white;
   border-radius: 5px;
 }
+
+.pointer {
+  cursor: pointer;
+}
+
 </style>
