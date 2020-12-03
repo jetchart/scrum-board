@@ -179,6 +179,13 @@ export default {
 
 <style>
 
+@font-face {
+  font-family: "OrangeJuice";
+  src: local("OrangeJuice"),
+   url(/src/assets/fonts/OrangeJuice.ttf);
+}
+
+
 .dd-drop-container{
   width: 20vw;
   min-width: 14em;
@@ -191,6 +198,7 @@ export default {
   white-space: normal;
   background-color: #d0d3cc;
   box-shadow: 0 1px 1px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24);
+  border-radius: 5px;
 }
 
 .card{
@@ -244,8 +252,9 @@ export default {
 }
 
 .item-title {
-  font-size: 1.4em;
-  font-weight: 800;
+  font-size: 2em;
+  font-weight: 600;
+  font-family: OrangeJuice;
   text-transform: uppercase;
 }
 

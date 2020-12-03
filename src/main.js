@@ -11,6 +11,8 @@ import jspdf from 'jspdf'
 import JsonExcel from "vue-json-excel";
 import movable from "v-movable";
 
+
+
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
