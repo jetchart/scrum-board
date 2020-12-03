@@ -252,7 +252,7 @@ export default {
 }
 
 .item-title {
-  font-size: 2em;
+  font-size: 2.2em;
   font-weight: 600;
   font-family: OrangeJuice;
   text-transform: uppercase;
