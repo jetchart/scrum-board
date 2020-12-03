@@ -13,7 +13,7 @@
   import {mapGetters} from "vuex";
 
   export default {
-    name: 'Planning',
+    name: 'BoardContext',
     components: { Room, Chat, Board },
     data () {
       return {
@@ -35,7 +35,7 @@
         window.scrollTo(0, 0);
       },
       reconnect() {
-        console.log('reconnect planning');
+        console.log('reconnect board');
         this.socket = io(this.url);
         this.$store.commit("setSocket", this.socket);
         this.subscribe();

@@ -1,7 +1,7 @@
 import Vue    from 'vue'
 import Router from 'vue-router'
 import Home   from './components/Home'
-import Planning   from './components/Planning'
+import BoardContext   from './components/BoardContext'
 
 Vue.use(Router);
 
@@ -17,13 +17,13 @@ export default new Router({
       redirect: {name: 'Home'},
     },
     {
-      path: '/planning/:room',
+      path: '/board/:room',
       component: Home
     },
     {
-      name: 'planning',
-      path: '/planning/:room/:name',
-      component: Planning
+      name: 'board',
+      path: '/board/:room/:name',
+      component: BoardContext
     },
   ],
 })

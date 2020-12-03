@@ -27,11 +27,11 @@
         this.roomParam = this.user.room;
       },
       setUser(user) {
-         this.goToPlanning()
+         this.goToBoardContext()
       },
-      goToPlanning() {
-        this.$router.push('/planning/' + this.user.room + '/' + this.user.name)
-        //his.$router.push({ name: 'planning', params: { room: this.user.room, name: this.user.name }})
+      goToBoardContext() {
+        this.$router.push('/board/' + this.user.room + '/' + this.user.name)
+        //his.$router.push({ name: 'board', params: { room: this.user.room, name: this.user.name }})
       },
       makeToast(variant, title, description) {
         this.$bvToast.toast(description, {
