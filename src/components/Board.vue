@@ -64,27 +64,11 @@ export default {
     return{
       editItemFlag: false,
       item: { title: null, description: null, sp: null, assigned: this.user.name},
-      stories: [
-        {
-          title: 'Script BD',
-          description: 'Generar el script inicial de BD',
-          time: '5',
-          type: 1
-        },
-        {
-          title: 'Refactor backend',
-          description: 'Realizar el refactor para utilizar el nuevo modelo de datos',
-          time: '5',
-          type: 1
-        },
-        {
-          title: 'Strategies por modulo',
-          description: 'Generar los strategies para utilizar en cada modulo',
-          time: '3',
-          type: 1
-        },
-      ],
       board: [
+          {
+            name: 'To Do',
+            children: []
+          },
           {
             name: 'In Progress',
             children: []
