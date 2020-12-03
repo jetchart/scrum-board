@@ -1,7 +1,7 @@
 {
   "name": "planning",
   "main": "src/index.js",
-  "description": "Planning",
+  "description": "Scrum Board",
   "version": "1.0.0",
   "author": "JME",
   "license": "MIT",
