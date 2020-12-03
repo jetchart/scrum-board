@@ -1,50 +1,57 @@
 <template>
   <div id="app">
-
-    <h2 class="dd-title" align="right">
-      <b-button variant="success" size="md" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
-    </h2>
-    <!-- Modal new task -->
-    <b-modal ref="newItemModal" title="New item" centered @ok="newItem()" @hide="editItemFlag = false">
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input v-model="item.title" type="text" class="form-control" id="title">
-      </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea v-model="item.description" class="form-control" id="description" rows="3"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="storyPoints">Story points</label>
-        <input v-model="item.sp" type="text" class="form-control" id="storyPoints">
-      </div>
-      <div class="form-group">
-        <label for="assigned">Assigned to</label>
-        <input v-model="item.assigned" type="text" class="form-control" id="assigned">
-      </div>
-    </b-modal>
-
-    <drag-drop
-      :user="user"
-      :originalData="[]"
-      :dropzones="board"
-      :dropzonesTitle="'Board'"
-      :inPlace="true"
-      :enableSave="true"
-      :enableCancel="true"
-      @dropInOriginalBucket="originalBucketDropEvent"
-      @dropInDestinationBucket="destinationBucketDropEvent"
-      @newItem="newItem($event)"
-    >
-      <template #dd-card="{ cardData }">
-        <custom-card
-          :data="cardData"
-          @done="doneMarked"
-          @deleteItem="deleteItem($event)"
-          @editItem="editItem($event)"
-        />
+    <b-overlay :show="showOverlay || !syncBoard || !socket.connected" rounded="sm">
+      <template v-slot:overlay>
+        <div class="text-center">
+          <b-icon icon="stopwatch" font-scale="3" animation="cylon"></b-icon>
+          <p id="cancel-label">{{showOverlay || !syncBoard? 'Please wait...' : 'Reconnecting...'}}</p>
+        </div>
       </template>
-    </drag-drop>
+      <h2 class="dd-title" align="right">
+        <b-button variant="success" size="md" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
+      </h2>
+      <!-- Modal new task -->
+      <b-modal ref="newItemModal" title="New item" centered @ok="newItem()" @hide="editItemFlag = false">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input v-model="item.title" type="text" class="form-control" id="title">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea v-model="item.description" class="form-control" id="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="storyPoints">Story points</label>
+          <input v-model="item.sp" type="text" class="form-control" id="storyPoints">
+        </div>
+        <div class="form-group">
+          <label for="assigned">Assigned to</label>
+          <input v-model="item.assigned" type="text" class="form-control" id="assigned">
+        </div>
+      </b-modal>
+
+      <drag-drop
+        :user="user"
+        :originalData="[]"
+        :dropzones="board"
+        :dropzonesTitle="'Board'"
+        :inPlace="true"
+        :enableSave="true"
+        :enableCancel="true"
+        @dropInOriginalBucket="originalBucketDropEvent"
+        @dropInDestinationBucket="destinationBucketDropEvent"
+        @newItem="newItem($event)"
+      >
+        <template #dd-card="{ cardData }">
+          <custom-card
+            :data="cardData"
+            @done="doneMarked"
+            @deleteItem="deleteItem($event)"
+            @editItem="editItem($event)"
+          />
+        </template>
+      </drag-drop>
+    </b-overlay>
   </div>
 </template>
 
@@ -61,7 +68,9 @@ export default {
     CustomCard
   },
   data() {
-    return{
+    return {
+      showOverlay: true,
+      syncBoard: false,
       editItemFlag: false,
       item: { title: null, description: null, sp: null, assigned: this.user.name},
       board: [
@@ -85,19 +94,25 @@ export default {
     }
   },
   mounted() {
-    this.getItems();
+    this.init();
   },
   methods: {
+    init() {
+      this.syncTasks = false;
+      this.getItems();
+    },
     openNewItemModal() {
       this.$refs.newItemModal.show();
     },
     getItems() {
       this.socket.on('SYNC_BOARD', (data) => {
+        this.showOverlay = false;
+        this.syncBoard = true;
         console.log("SYNC_BOARD", data);
         this.board.splice(0, this.board.length);
         data.board.forEach(element => {
           this.board.push(element);
-        });;
+        });
       });
     },
     sendItem() {
@@ -158,7 +173,16 @@ export default {
       if (columnName == 'Done') this.sendItem();
       console.log("Destination: ", columnName, result)
     },
-  }
+  },
+  watch: {
+    'socket.connected': function() {
+      if (!this.socket.connected)
+        this.$emit('reconnect');
+      else {
+        this.init();
+      }
+    }
+  },
 }
 </script>
 
