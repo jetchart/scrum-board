@@ -1,10 +1,10 @@
 <template>
   <div class="cc-card">
     <div align="right">
-      <b-button variant="secondary" size="sm" @click="editItem()">Edit</b-button>
+      <b-button variant="secondary" size="sm" @click="editItem()"><b-icon icon="pencil-square"></b-icon></b-button>
       <b-button variant="danger" size="sm" @click="deleteItem()">X</b-button>
     </div>
-    <h3>{{data.title}}</h3>
+    <div class="card-title">{{data.title}}</div>
     <p>
       {{data.description}}
     </p>
@@ -42,6 +42,11 @@ export default {
   margin: 5px;
   background-color: white;
   font-size: 0.8em;
+}
+
+.card-title {
+  font-size: 1em;
+  font-weight: 800;
 }
 
 .cc-card h3 {

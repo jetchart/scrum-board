@@ -40,8 +40,6 @@
       setUser() {
         if (!this.user.name || !this.user.room)
           return;
-        let room = '00000' + this.user.room;
-        this.user.room = room.substring(room.length-5, room.length);
         this.$emit('setUser', this.user);
       }
     },
