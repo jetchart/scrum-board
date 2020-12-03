@@ -126,7 +126,7 @@ io.on('connection', socket => {
 
     socket.on('UPDATE_BOARD', (data) => {
       boardService.update(data.room, boards, data);
-      console.log("UPDATE_BOARD", data);
+      console.log("UPDATE_BOARD", JSON.stringify(data));
       socket.in(data.room).emit('SYNC_BOARD', data);
       fs.writeFile(data.room + '.json', JSON.stringify(data), function (err) {
         if (err) return console.log("Error writing file", err);
