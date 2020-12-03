@@ -2,7 +2,7 @@
   <div id="board">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <header-custom class="header-a header-t"></header-custom>
-    <div class="header-t">
+    <div class="header-t" v-bind:class="{'content': getConnected}">
       <router-view></router-view>
     </div>
     <footer-custom class="opacity-t"></footer-custom>
@@ -62,7 +62,6 @@ a {
 
 .content {
   margin: 2rem;
-  padding:20px;
 }
 
 .opacity-t {
