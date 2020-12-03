@@ -85,8 +85,16 @@ export default {
         }
 
         if (dropResult.addedIndex !== null){
-          let found = this.dropGroups.filter(p => p.name === columnId)[0];
+          let i = 0;
+          let index = -1;
+          let found = this.dropGroups.filter(p => {
+            if (p.name === columnId) index = i;
+            i++;
+            return p.name === columnId;
+          })[0];
           found.children.splice(dropResult.addedIndex, 0, dropResult.payload);
+          if (!this.dropGroups[index].children[dropResult.addedIndex].assigned)
+            this.dropGroups[index].children[dropResult.addedIndex].assigned =this.$parent.$parent.user.name;
         }
       }
 

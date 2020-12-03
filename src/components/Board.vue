@@ -166,12 +166,9 @@ export default {
       this.$refs.newItemModal.show();
     },
     originalBucketDropEvent(result) {
-      console.log("Original: ", result);
     },
     destinationBucketDropEvent(columnName, result) {
-      console.log(columnName);
       if (columnName == 'Done') this.sendItem();
-      console.log("Destination: ", columnName, result)
     },
   },
   watch: {
