@@ -1,8 +1,8 @@
 <template>
   <div id="app">
 
-<h2 class="dd-title">
-      <b-button variant="success" @click="openNewItemModal()">New item</b-button>
+    <h2 class="dd-title">
+      <b-button variant="success" size="sm" @click="openNewItemModal()">New item</b-button>
     </h2>
     <!-- Modal new task -->
     <b-modal ref="newItemModal" title="New item" centered @ok="newItem()" @hide="editItemFlag = false">

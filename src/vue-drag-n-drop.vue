@@ -172,7 +172,7 @@ export default {
 <style>
 
 .dd-drop-container{
-  width: 25em;
+  width: 18em;
   display: inline-block;
   vertical-align: top;
   padding: 10px;
