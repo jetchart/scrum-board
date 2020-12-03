@@ -41,7 +41,6 @@ export default {
   border-radius: 5px;
   margin: 5px;
   background-color: white;
-  min-width: 200px;
   font-size: 0.8em;
 }
 

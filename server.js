@@ -4,6 +4,7 @@ var io = require('socket.io')(http)
 const connectionService = require('./connectionService')
 const taskService = require('./taskService')
 const boardService = require('./boardService')
+const fs = require('fs')
 
 var os = require("os");
 var connections = [];
@@ -34,32 +35,36 @@ io.on('connection', socket => {
       socket.join(user.room);
       connections.push({'id': socket.id, 'user': user});
     }
+    
     /* Sync board */
     let boardRoom = boardService.filterAllByRoom(user.room, boards);
-    console.log("boardRoom", boardRoom);
     if (!boardRoom) {
-      boardRoom = {room: user.room, board: [
-        {
-          name: 'To Do',
-          children: []
-        },
-        {
-          name: 'In Progress',
-          children: []
-        },
-        {
-          name: 'Testing',
-          children: []
-        },
-        {
-          name: 'Done',
-          children: []
-        }
-      ]};
+      if (!fs.existsSync(user.room + '.json')) {
+        boardRoom = {room: user.room, board: [
+          {
+            name: 'To Do',
+            children: []
+          },
+          {
+            name: 'In Progress',
+            children: []
+          },
+          {
+            name: 'Testing',
+            children: []
+          },
+          {
+            name: 'Done',
+            children: []
+          }
+        ]};
+      } else {
+      const data = fs.readFileSync(user.room + '.json', {encoding:'utf8', flag:'r'}); 
+      boardRoom = JSON.parse(data);
+      }
       boards.push(boardRoom);
     }
     io.to(socket.id).emit('SYNC_BOARD', boardRoom);
-    console.log('boarddddd', boardRoom);
   });
 
   socket.on('unsubscribe', () => {
@@ -123,6 +128,9 @@ io.on('connection', socket => {
       boardService.update(data.room, boards, data);
       console.log("UPDATE_BOARD", data);
       socket.in(data.room).emit('SYNC_BOARD', data);
+      fs.writeFile(data.room + '.json', JSON.stringify(data), function (err) {
+        if (err) return console.log("Error writing file", err);
+      });
     });
 
   /************* TASKS **************/
