@@ -18,7 +18,7 @@
     data () {
       return {
         user: {},
-        url: location.hostname === 'localhost' ? 'localhost:3000' : 'https://scrum-board.herokuapp.com/',
+        url: location.hostname === 'localhost' ? 'localhost:3000' : 'https://scrum-board-vue.herokuapp.com/',
         options: [0.5, 1, 2, 3, 5],
       }
     },
