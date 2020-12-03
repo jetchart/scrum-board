@@ -35,36 +35,41 @@ io.on('connection', socket => {
       socket.join(user.room);
       connections.push({'id': socket.id, 'user': user});
     }
-    
+
     /* Sync board */
     let boardRoom = boardService.filterAllByRoom(user.room, boards);
     if (!boardRoom) {
-      if (!fs.existsSync(user.room + '.json')) {
-        boardRoom = {room: user.room, board: [
-          {
-            name: 'To Do',
-            children: []
-          },
-          {
-            name: 'In Progress',
-            children: []
-          },
-          {
-            name: 'Testing',
-            children: []
-          },
-          {
-            name: 'Done',
-            children: []
-          }
-        ]};
-      } else {
-      const data = fs.readFileSync(user.room + '.json', {encoding:'utf8', flag:'r'}); 
-      boardRoom = JSON.parse(data);
-      }
-      boards.push(boardRoom);
+      boardService.getREST$(user.room).then(data => {
+        data = JSON.parse(data);
+        if (!data || data.length == 0) {
+          boardRoom = {room: user.room, board: [
+            {
+              name: 'To Do',
+              children: []
+            },
+            {
+              name: 'In Progress',
+              children: []
+            },
+            {
+              name: 'Testing',
+              children: []
+            },
+            {
+              name: 'Done',
+              children: []
+            }
+          ]};
+        } else {
+          boardRoom = {room: user.room, board: data[0].board};
+          console.log('PARSEADO', boardRoom);
+        }
+        boards.push(boardRoom);
+        io.to(socket.id).emit('SYNC_BOARD', boardRoom);
+      });
+    } else {
+      io.to(socket.id).emit('SYNC_BOARD', boardRoom);
     }
-    io.to(socket.id).emit('SYNC_BOARD', boardRoom);
   });
 
   socket.on('unsubscribe', () => {
@@ -128,6 +133,7 @@ io.on('connection', socket => {
       boardService.update(data.room, boards, data);
       console.log("UPDATE_BOARD", JSON.stringify(data));
       socket.in(data.room).emit('SYNC_BOARD', data);
+      boardService.saveOrUpdate(data.room, data);
       fs.writeFile(data.room + '.json', JSON.stringify(data), function (err) {
         if (err) return console.log("Error writing file", err);
       });
