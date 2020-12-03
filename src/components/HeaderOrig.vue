@@ -64,6 +64,12 @@
 
 <style>
 
+@font-face {
+  font-family: "Viminalis";
+  src: local("Viminalis"),
+   url(/src/assets/fonts/viminalis/Viminalis.otf);
+}
+
   .header {
     height: 5rem;
     padding: 20px;
@@ -92,6 +98,7 @@
   }
 
   .brand {
+    font-family: Viminalis;
   }
 
 </style>
