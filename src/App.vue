@@ -2,7 +2,7 @@
   <div id="board">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <header-custom class="header-a header-t"></header-custom>
-    <div class="header-t" v-bind:class="{'content': getConnected, 'bg-light': getConnected}">
+    <div class="header-t">
       <router-view></router-view>
     </div>
     <footer-custom class="opacity-t"></footer-custom>
