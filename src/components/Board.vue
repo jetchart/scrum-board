@@ -1,15 +1,21 @@
 <template>
   <div id="app">
-    <b-overlay :show="showOverlay || !syncBoard || !socket.connected" rounded="sm">
+    <b-overlay :show="showOverlay || !syncBoard || !syncUsers || !socket.connected" rounded="sm">
       <template v-slot:overlay>
         <div class="text-center">
+          {{connections}}
           <b-icon icon="stopwatch" font-scale="3" animation="cylon"></b-icon>
-          <p id="cancel-label">{{showOverlay || !syncBoard? 'Please wait...' : 'Reconnecting...'}}</p>
+          <p id="cancel-label">{{showOverlay || !syncBoard || !syncUsers? 'Please wait...' : 'Reconnecting...'}}</p>
         </div>
       </template>
-      <h2 class="dd-title" align="right">
-        <b-button variant="success" size="md" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
-      </h2>
+      <div class="row">
+        <div class="col" align="left">
+          <b-button variant="primary" v-b-tooltip.hover :title="getUsersString()" size="sm" ><b-badge variant="light">{{connections.length}}</b-badge>&nbsp;<b-icon icon="person-fill"></b-icon></b-button>
+        </div>
+        <div class="col" align="right">
+          <b-button variant="success" size="md" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
+        </div>
+      </div>
       <!-- Modal new task -->
       <b-modal ref="newItemModal" title="New item" centered @ok="newItem()" @hide="editItemFlag = false">
         <div class="form-group">
@@ -71,6 +77,8 @@ export default {
     return {
       showOverlay: true,
       syncBoard: false,
+      connections: [],
+      syncUsers: false,
       editItemFlag: false,
       item: { title: null, description: null, sp: null, assigned: this.user.name},
       board: [
@@ -97,10 +105,24 @@ export default {
     this.init();
   },
   methods: {
+    getUsersString() {
+      let s = "";
+      this.connections.forEach(c => s += '[' + c.user.name + "] ");
+      return s;
+      //return this.connections.map(function(c){ return c.user.name;}).join(' | ');
+    },
     init() {
       this.syncTasks = false;
       this.getItems();
+      this.getSyncUsers();
     },
+    getSyncUsers() {
+        this.socket.on('SYNC', (data) => {
+          this.connections = data;
+          this.showOverlay = false;
+          this.syncUsers = true;
+        });
+      },
     openNewItemModal() {
       this.$refs.newItemModal.show();
     },
@@ -121,9 +143,18 @@ export default {
         console.log("UPDATE_BOARD", data);
       },
     newItem() {
+      if (!this.item.id) this.item.id = getNewId();
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
       this.item = { title: null, description: null, sp: null, assigned: this.user.name};
       this.sendItem();
+    },
+    getNewId() {
+      let lastId = 0;
+      this.board.forEach(b => b.children.forEach(c => {
+        if (c.id > lastId) lastId = c.id;
+      }));
+      console.log("Last id", lastId);
+      return lastId + 1;
     },
     doneMarked(data) {
       data.done = true;

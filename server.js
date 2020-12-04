@@ -37,6 +37,11 @@ io.on('connection', socket => {
       console.log("PUSH USER", user);
     }
 
+    /* SYNC users */
+    const connectionsRoom = connectionService.filterAllByRoom(user.room, connections);
+    socket.in(user.room).emit('SYNC', connectionsRoom);
+    io.to(socket.id).emit('SYNC', connectionsRoom);
+
     /* Sync board */
     let boardRoom = boardService.filterAllByRoom(user.room, boards);
     console.log("FILTER BOARD", boardRoom);
@@ -80,7 +85,9 @@ io.on('connection', socket => {
     const connection = connectionService.findById(socket.id, connections);
     if (connection != null && connection.user.room != null) {
       /* SYNC */
+      console.log("DISCONNECT USER (unsubscribe)", connection);
       connectionService.deleteById(connection.id, connections);
+      socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
     }
   });
 
@@ -89,7 +96,9 @@ io.on('connection', socket => {
     const connection = connectionService.findById(socket.id, connections);
     if (connection != null && connection.user.room != null) {
       /* SYNC */
+      console.log("DISCONNECT USER (disconnect)", connection);
       connectionService.deleteById(connection.id, connections);
+      socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
     }
   });
 
@@ -99,6 +108,7 @@ io.on('connection', socket => {
     //console.log("PONG!", data);
   });
 
+  
   /************* CHAT **************/
 
   socket.on('SEND_MESSAGE', (data) => {
@@ -131,7 +141,7 @@ io.on('connection', socket => {
 
   });
 
-    /************* BOARD **************/
+  /************* BOARD **************/
 
     socket.on('UPDATE_BOARD', (data) => {
       boardService.update(data.room, boards, data);
