@@ -12,7 +12,7 @@
           <b-button variant="primary" v-b-tooltip.hover :title="getUsersString()" size="sm" ><b-badge variant="light">{{connections.length}}</b-badge>&nbsp;<b-icon icon="person-fill"></b-icon></b-button>
         </div>
         <div class="col" align="right">
-          <b-button variant="success" size="md" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
+          <b-button variant="success" size="sm" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
         </div>
       </div>
       <!-- Modal new task -->
@@ -137,12 +137,12 @@ export default {
       });
     },
     sendItem() {
-        const data = { room: this.user.room,  board: this.board };
-        this.socket.emit('UPDATE_BOARD', data);
-        console.log("UPDATE_BOARD", data);
-      },
+      const data = { room: this.user.room,  board: this.board };
+      this.socket.emit('UPDATE_BOARD', data);
+      console.log("UPDATE_BOARD", data);
+    },
     newItem() {
-      if (!this.item.id) this.item.id = getNewId();
+      if (!this.item.id) this.item.id = this.getNewId();
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
       this.item = { title: null, description: null, sp: null, assigned: this.user.name};
       this.sendItem();
