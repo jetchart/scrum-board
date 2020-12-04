@@ -3,17 +3,25 @@
     <div class="row">
       <div class="col card-title" align="left">{{data.title}}</div>
       <div class="col" align="right">
-        <b-icon class="h6 mb-0 pointer" icon="pencil-square" variant="primary" @click="editItem()"></b-icon>
-        <b-icon class="h6 mb-0 pointer" icon="x-square" variant="danger" @click="deleteItem()"></b-icon>
+        <b-icon class="h6 mb-0 pointer" v-b-tooltip.hover title="Edit" icon="pencil-square" variant="primary" @click="editItem()"></b-icon>
+        <b-icon class="h6 mb-0 pointer" v-b-tooltip.hover title="Delete" icon="x-square" variant="danger" @click="showDeleteItemModal()"></b-icon>
       </div>
+      <!-- Modal delete item -->
+      <b-modal ref="deleteItemModal" title="Delete" centered @ok="deleteItem()">
+        <p>Are you sure you want to delete this item?</p>
+      </b-modal>
     </div>
     <p>
       {{data.description}}
     </p>
-    <h6>
-      <b-badge variant="primary">{{data.sp}}</b-badge>
-      <b-badge variant="success">{{data.assigned}}</b-badge>
-    </h6>
+    <div class="row">
+      <div class="col" align="left">
+        <b-badge class="h6 mb-0" variant="primary" v-b-tooltip.hover title="Story points">{{data.sp}}</b-badge>
+        <b-badge class="h6 mb-0" variant="success" v-b-tooltip.hover title="Assigned to">{{data.assigned}}</b-badge>
+        
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -22,8 +30,8 @@ export default {
   name: 'CustomCard',
   props: ['data', 'index'],
   methods: {
-    markDone() {
-      this.$emit('done', this.data);
+    showDeleteItemModal() {
+      this.$refs.deleteItemModal.show();
     },
     deleteItem() {
       this.$emit('deleteItem', this.data);
