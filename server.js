@@ -34,13 +34,16 @@ io.on('connection', socket => {
     if (connection === undefined) {
       socket.join(user.room);
       connections.push({'id': socket.id, 'user': user});
+      console.log("PUSH USER", user);
     }
 
     /* Sync board */
     let boardRoom = boardService.filterAllByRoom(user.room, boards);
+    console.log("FILTER BOARD", boardRoom);
     if (!boardRoom) {
       boardService.getREST$(user.room).then(data => {
         data = JSON.parse(data);
+        console.log("REST", data);
         if (!data || data.length == 0) {
           boardRoom = {room: user.room, board: [
             {
@@ -68,6 +71,7 @@ io.on('connection', socket => {
         io.to(socket.id).emit('SYNC_BOARD', boardRoom);
       });
     } else {
+      console.log("SYNC_BOARD", boardRoom);
       io.to(socket.id).emit('SYNC_BOARD', boardRoom);
     }
   });
