@@ -3,8 +3,8 @@
     <div class="row">
       <div class="col card-title" align="left">{{data.title}}</div>
       <div class="col" align="right">
-        <b-icon class="h6 mb-0 pointer" v-b-tooltip.hover title="Edit" icon="pencil-square" variant="primary" @click="editItem()"></b-icon>
-        <b-icon class="h6 mb-0 pointer" v-b-tooltip.hover title="Delete" icon="x-square" variant="danger" @click="showDeleteItemModal()"></b-icon>
+        <b-icon class="h6 mb-0 pointer" icon="pencil-square" variant="primary" @click="editItem()"></b-icon>
+        <b-icon class="h6 mb-0 pointer" icon="x-square" variant="danger" @click="showDeleteItemModal()"></b-icon>
       </div>
       <!-- Modal delete item -->
       <b-modal ref="deleteItemModal" title="Delete" centered @ok="deleteItem()">
