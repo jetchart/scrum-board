@@ -3,7 +3,6 @@
     <b-overlay :show="showOverlay || !syncBoard || !syncUsers || !socket.connected" rounded="sm">
       <template v-slot:overlay>
         <div class="text-center">
-          {{connections}}
           <b-icon icon="stopwatch" font-scale="3" animation="cylon"></b-icon>
           <p id="cancel-label">{{showOverlay || !syncBoard || !syncUsers? 'Please wait...' : 'Reconnecting...'}}</p>
         </div>
