@@ -23,7 +23,8 @@
       </div>
       <div class="col" align="right">
         <b-badge v-if="data.changed == 'C'" class="animation-show h6 mb-0" variant="warning">NEW</b-badge>
-        <b-badge v-if="data.changed == 'U'" class="animation-show h6 mb-0" variant="warning">UPDATE</b-badge>
+        <b-badge v-if="data.changed == 'U'" class="animation-show h6 mb-0" variant="warning">UPDATED</b-badge>
+        <b-badge v-if="data.changed == 'D'" class="animation-show h6 mb-0" variant="danger">DELETED</b-badge>
       </div>
     </div>
 
@@ -106,7 +107,7 @@ export default {
 .animation-show {
   animation-duration: 0.7s;
   animation-name: animation-show-name;
-  animation-iteration-count: 9;
+  animation-iteration-count: infinite;
 }
 
 @keyframes animation-show-name {

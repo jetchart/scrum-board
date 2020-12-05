@@ -158,7 +158,6 @@ export default {
         let boardIndex = 0;
         let childrenIndex = 0;
         let changes = [];
-        console.log(board);
         board.forEach(b => {
           b.children.forEach(c => {
             if (c.changed) changes.push({board: boardIndex, children: childrenIndex});
@@ -167,20 +166,21 @@ export default {
           childrenIndex = 0;
           boardIndex++;
           });
-          console.log("changes", changes);
         changes.forEach(c => {
+          let remove;
           const item = Object.assign(board[c.board].children[c.children], {});
+          remove = item.changed == 'D';
           item.changed = null;
-          board[c.board].children.splice(c.children, 1, item);
+          if (!remove) board[c.board].children.splice(c.children, 1, item);
+          if (remove) board[c.board].children.splice(c.children, 1);
         })
-      }, 5000, this.board);
+      }, 4000, this.board);
     },
     getNewId() {
       let lastId = 0;
       this.board.forEach(b => b.children.forEach(c => {
         if (c.id > lastId) lastId = c.id;
       }));
-      console.log("Last id", lastId);
       return lastId + 1;
     },
     doneMarked(data) {
@@ -201,8 +201,12 @@ export default {
           boardIndex++;
           });
       changes.forEach(c => {
-        this.board[c.board].children.splice(c.children, 1);
+        this.board[c.board].children[c.children].changed = 'D';
+        //let item = Object.assign(this.board[c.board].children[c.children], {});
+        //item.changed = 'D';
+        //this.board[c.board].children.splice(c.children, 1, item);
       });
+      this.removeChangesFlagTimeOut();
       this.sendItem();
     },
     editItem(item) {
@@ -213,7 +217,6 @@ export default {
     originalBucketDropEvent(result) {
     },
     destinationBucketDropEvent(columnName, result) {
-      console.log(columnName, result.addedIndex);
       this.board.forEach(b => {
         if (b.name == columnName && result.addedIndex != null) b.children[result.addedIndex].changed = 'U';
       });
