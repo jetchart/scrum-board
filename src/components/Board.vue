@@ -156,7 +156,8 @@ export default {
     removeChangesFlagTimeOut() {
       setTimeout(function(board) {
         let boardIndex = 0;
-        let childrenIndex = 0;
+        //Ver porque el índice siempre está un numero adelante
+        let childrenIndex = -1;
         let changes = [];
         console.log(board);
         board.forEach(b => {
@@ -166,10 +167,11 @@ export default {
             })
           boardIndex++;
           });
+          console.log("changes", changes);
         changes.forEach(c => {
-          const item = Object.assign(board[c.board].children[c.children], {});
+          //const item = Object.assign(board[c.board].children[c.children], {});
+          const item = board[c.board].children[c.children];
           item.changed = false;
-          console.log(item);
           board[c.board].children.splice(c.children, 1, item);
         })
       }, 2000, this.board);
@@ -190,28 +192,28 @@ export default {
       let i = 0;
       let indexFounded = -1;
       this.board[0].children.forEach(item => {
-        if (data.title == item.title) indexFounded = i;
+        if (data.id == item.id) indexFounded = i;
         i++;
       });
       if (indexFounded > -1) this.board[0].children.splice(indexFounded, 1);
       i = 0;
       indexFounded = -1;
       this.board[1].children.forEach(item => {
-        if (data.title == item.title) indexFounded = i;
+        if (data.id == item.id) indexFounded = i;
         i++;
       });
       if (indexFounded > -1) this.board[1].children.splice(indexFounded, 1);
       i = 0;
       indexFounded = -1;
       this.board[2].children.forEach(item => {
-        if (data.title == item.title) indexFounded = i;
+        if (data.id == item.id) indexFounded = i;
         i++;
       });
       if (indexFounded > -1) this.board[2].children.splice(indexFounded, 1);
       i = 0;
       indexFounded = -1;
       this.board[3].children.forEach(item => {
-        if (data.title == item.title) indexFounded = i;
+        if (data.id == item.id) indexFounded = i;
         i++;
       });
       if (indexFounded > -1) this.board[3].children.splice(indexFounded, 1);
@@ -219,14 +221,27 @@ export default {
     },
     editItem(item) {
       this.editItemFlag = true;
-      this.addChangedFlag(item);
       this.item = Object.assign(item, {});
       this.$refs.newItemModal.show();
     },
     originalBucketDropEvent(result) {
     },
     destinationBucketDropEvent(columnName, result) {
+      if (columnName == 'To Do') {
+        if (result.addedIndex != null) this.board[0].children[result.addedIndex].changed = true;
+      }
+      if (columnName == 'In Progress') {
+        if (result.addedIndex != null) this.board[1].children[result.addedIndex].changed = true;
+      }
+      if (columnName == 'Testing') {
+        if (result.addedIndex != null) this.board[2].children[result.addedIndex].changed = true;
+      }
+      if (columnName == 'Done') {
+        if (result.addedIndex != null) this.board[3].children[result.addedIndex].changed = true;
+      }
       if (columnName == 'Done') this.sendItem();
+      console.log("move");
+      this.removeChangesFlagTimeOut();
     },
   },
   watch: {

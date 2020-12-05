@@ -144,13 +144,11 @@ io.on('connection', socket => {
   /************* BOARD **************/
 
     socket.on('UPDATE_BOARD', (data) => {
-      boardService.update(data.room, boards, data);
       console.log("UPDATE_BOARD", JSON.stringify(data));
       socket.in(data.room).emit('SYNC_BOARD', data);
+      data.board.forEach(b => b.children.forEach(c => c.changed = false));
+      boardService.update(data.room, boards, data);
       boardService.saveOrUpdate(data.room, data);
-      fs.writeFile(data.room + '.json', JSON.stringify(data), function (err) {
-        if (err) return console.log("Error writing file", err);
-      });
     });
 
   /************* TASKS **************/
