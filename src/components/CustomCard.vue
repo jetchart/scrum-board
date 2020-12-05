@@ -1,7 +1,9 @@
 <template>
-  <div class="cc-card" :class="{'changed': data.changed}">
+  <div class="cc-card">
     <div class="row">
-      <div class="col card-title" align="left">{{data.title}}</div>
+      <div class="col card-title" align="left">
+        {{data.title}}
+        </div>
       <div class="col" align="right">
         <b-icon class="h6 mb-0 pointer" icon="pencil-square" variant="primary" @click="editItem()"></b-icon>
         <b-icon class="h6 mb-0 pointer" icon="x-square" variant="danger" @click="showDeleteItemModal()"></b-icon>
@@ -18,7 +20,10 @@
       <div class="col" align="left">
         <b-badge class="h6 mb-0" variant="primary" v-b-tooltip.hover title="Story points">{{data.sp}}</b-badge>
         <b-badge class="h6 mb-0" variant="success" v-b-tooltip.hover title="Assigned to">{{data.assigned}}</b-badge>
-        
+      </div>
+      <div class="col" align="right">
+        <b-badge v-if="data.changed == 'C'" class="animation-show h6 mb-0" variant="warning">NEW</b-badge>
+        <b-badge v-if="data.changed == 'U'" class="animation-show h6 mb-0" variant="warning">UPDATE</b-badge>
       </div>
     </div>
 
@@ -74,16 +79,40 @@ export default {
   cursor: pointer;
 }
 
-.changed {
+.changed-create {
   animation-duration: 0.7s;
-  animation-name: size-animation;
+  animation-name: size-animation-create;
   animation-iteration-count: 3;
 }
 
-@keyframes size-animation {
+@keyframes size-animation-create {
   0% { background-color: white; }
   50% { background-color: yellow; }
   100% { background-color: white; }
+}
+
+.changed-update {
+  animation-duration: 0.7s;
+  animation-name: size-animation-update;
+  animation-iteration-count: 3;
+}
+
+@keyframes size-animation-update {
+  0% { background-color: white; }
+  50% { background-color: green; }
+  100% { background-color: white; }
+}
+
+.animation-show {
+  animation-duration: 0.7s;
+  animation-name: animation-show-name;
+  animation-iteration-count: 9;
+}
+
+@keyframes animation-show-name {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 </style>

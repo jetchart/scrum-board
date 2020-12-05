@@ -79,7 +79,7 @@ export default {
       connections: [],
       syncUsers: false,
       editItemFlag: false,
-      item: { title: null, description: null, sp: null, assigned: this.user.name},
+      item: { title: null, description: null, sp: null, assigned: this.user.name, changed: null, },
       board: [
           {
             name: 'To Do',
@@ -145,18 +145,17 @@ export default {
     newItem() {
       if (!this.item.id) this.item.id = this.getNewId();
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
-      this.addChangedFlag(this.item);
-      this.item = { title: null, description: null, sp: null, assigned: this.user.name};
+      this.addChangedFlag(this.item, !this.editItemFlag? 'C' : 'U');
+      this.item = { title: null, description: null, sp: null, assigned: this.user.name, changed: null, };
       this.sendItem();
     },
-    addChangedFlag(item) {
-      item.changed = true;
+    addChangedFlag(item, change) {
+      item.changed = change;
       this.removeChangesFlagTimeOut();
     },
     removeChangesFlagTimeOut() {
       setTimeout(function(board) {
         let boardIndex = 0;
-        //Ver porque el índice siempre está un numero adelante
         let childrenIndex = 0;
         let changes = [];
         console.log(board);
@@ -170,12 +169,11 @@ export default {
           });
           console.log("changes", changes);
         changes.forEach(c => {
-          //const item = Object.assign(board[c.board].children[c.children], {});
-          const item = board[c.board].children[c.children];
-          item.changed = false;
+          const item = Object.assign(board[c.board].children[c.children], {});
+          item.changed = null;
           board[c.board].children.splice(c.children, 1, item);
         })
-      }, 2000, this.board);
+      }, 5000, this.board);
     },
     getNewId() {
       let lastId = 0;
@@ -191,12 +189,20 @@ export default {
     },
     deleteItem(data) {
       let i = 0;
-      let indexFounded = -1;
-      this.board.forEach(b =>b.children.forEach(item => {
-        if (data.id == item.id) indexFounded = i;
-        i++;
-      }));
-      if (indexFounded > -1) this.board[0].children.splice(indexFounded, 1);
+      let boardIndex = 0;
+      let childrenIndex = 0;
+      let changes = [];
+        this.board.forEach(b => {
+          b.children.forEach(c => {
+            if (data.id == c.id) changes.push({board: boardIndex, children: childrenIndex});
+            childrenIndex++;
+            })
+          childrenIndex = 0;
+          boardIndex++;
+          });
+      changes.forEach(c => {
+        this.board[c.board].children.splice(c.children, 1);
+      });
       this.sendItem();
     },
     editItem(item) {
@@ -209,7 +215,7 @@ export default {
     destinationBucketDropEvent(columnName, result) {
       console.log(columnName, result.addedIndex);
       this.board.forEach(b => {
-        if (b.name == columnName && result.addedIndex != null) b.children[result.addedIndex].changed = true;
+        if (b.name == columnName && result.addedIndex != null) b.children[result.addedIndex].changed = 'U';
       });
       if (this.board[this.board.length -1 ].name == columnName) this.sendItem();
       this.removeChangesFlagTimeOut();
