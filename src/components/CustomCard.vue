@@ -1,5 +1,5 @@
 <template>
-  <div class="cc-card">
+  <div class="cc-card" :class="{'changed': data.changed}">
     <div class="row">
       <div class="col card-title" align="left">{{data.title}}</div>
       <div class="col" align="right">
@@ -72,6 +72,18 @@ export default {
 
 .pointer {
   cursor: pointer;
+}
+
+.changed {
+  animation-duration: 0.7s;
+  animation-name: size-animation;
+  animation-iteration-count: 3;
+}
+
+@keyframes size-animation {
+  0% { background-color: white; }
+  50% { background-color: yellow; }
+  100% { background-color: white; }
 }
 
 </style>

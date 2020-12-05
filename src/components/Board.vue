@@ -134,6 +134,7 @@ export default {
         data.board.forEach(element => {
           this.board.push(element);
         });
+        this.removeChangesFlagTimeOut();
       });
     },
     sendItem() {
@@ -144,8 +145,34 @@ export default {
     newItem() {
       if (!this.item.id) this.item.id = this.getNewId();
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
+      this.addChangedFlag(this.item);
       this.item = { title: null, description: null, sp: null, assigned: this.user.name};
       this.sendItem();
+    },
+    addChangedFlag(item) {
+      item.changed = true;
+      this.removeChangesFlagTimeOut();
+    },
+    removeChangesFlagTimeOut() {
+      setTimeout(function(board) {
+        let boardIndex = 0;
+        let childrenIndex = 0;
+        let changes = [];
+        console.log(board);
+        board.forEach(b => {
+          b.children.forEach(c => {
+            if (c.changed) changes.push({board: boardIndex, children: childrenIndex});
+            childrenIndex++;
+            })
+          boardIndex++;
+          });
+        changes.forEach(c => {
+          const item = Object.assign(board[c.board].children[c.children], {});
+          item.changed = false;
+          console.log(item);
+          board[c.board].children.splice(c.children, 1, item);
+        })
+      }, 2000, this.board);
     },
     getNewId() {
       let lastId = 0;
@@ -192,6 +219,7 @@ export default {
     },
     editItem(item) {
       this.editItemFlag = true;
+      this.addChangedFlag(item);
       this.item = Object.assign(item, {});
       this.$refs.newItemModal.show();
     },
