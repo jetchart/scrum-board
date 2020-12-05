@@ -157,7 +157,7 @@ export default {
       setTimeout(function(board) {
         let boardIndex = 0;
         //Ver porque el índice siempre está un numero adelante
-        let childrenIndex = -1;
+        let childrenIndex = 0;
         let changes = [];
         console.log(board);
         board.forEach(b => {
@@ -165,6 +165,7 @@ export default {
             if (c.changed) changes.push({board: boardIndex, children: childrenIndex});
             childrenIndex++;
             })
+          childrenIndex = 0;
           boardIndex++;
           });
           console.log("changes", changes);
@@ -191,32 +192,11 @@ export default {
     deleteItem(data) {
       let i = 0;
       let indexFounded = -1;
-      this.board[0].children.forEach(item => {
+      this.board.forEach(b =>b.children.forEach(item => {
         if (data.id == item.id) indexFounded = i;
         i++;
-      });
+      }));
       if (indexFounded > -1) this.board[0].children.splice(indexFounded, 1);
-      i = 0;
-      indexFounded = -1;
-      this.board[1].children.forEach(item => {
-        if (data.id == item.id) indexFounded = i;
-        i++;
-      });
-      if (indexFounded > -1) this.board[1].children.splice(indexFounded, 1);
-      i = 0;
-      indexFounded = -1;
-      this.board[2].children.forEach(item => {
-        if (data.id == item.id) indexFounded = i;
-        i++;
-      });
-      if (indexFounded > -1) this.board[2].children.splice(indexFounded, 1);
-      i = 0;
-      indexFounded = -1;
-      this.board[3].children.forEach(item => {
-        if (data.id == item.id) indexFounded = i;
-        i++;
-      });
-      if (indexFounded > -1) this.board[3].children.splice(indexFounded, 1);
       this.sendItem();
     },
     editItem(item) {
@@ -227,20 +207,11 @@ export default {
     originalBucketDropEvent(result) {
     },
     destinationBucketDropEvent(columnName, result) {
-      if (columnName == 'To Do') {
-        if (result.addedIndex != null) this.board[0].children[result.addedIndex].changed = true;
-      }
-      if (columnName == 'In Progress') {
-        if (result.addedIndex != null) this.board[1].children[result.addedIndex].changed = true;
-      }
-      if (columnName == 'Testing') {
-        if (result.addedIndex != null) this.board[2].children[result.addedIndex].changed = true;
-      }
-      if (columnName == 'Done') {
-        if (result.addedIndex != null) this.board[3].children[result.addedIndex].changed = true;
-      }
-      if (columnName == 'Done') this.sendItem();
-      console.log("move");
+      console.log(columnName, result.addedIndex);
+      this.board.forEach(b => {
+        if (b.name == columnName && result.addedIndex != null) b.children[result.addedIndex].changed = true;
+      });
+      if (this.board[this.board.length -1 ].name == columnName) this.sendItem();
       this.removeChangesFlagTimeOut();
     },
   },
