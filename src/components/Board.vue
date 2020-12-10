@@ -121,7 +121,7 @@ export default {
       this.statistics.all = 0;
       this.board.forEach(b => {
           b.children.forEach(c => {
-            if (c.doneDate) this.statistics.done += Number(c.sp);
+            if (c.doneDate && c.sp) this.statistics.done += Number(c.sp);
             this.statistics.all += Number(c.sp);
           })
         });
