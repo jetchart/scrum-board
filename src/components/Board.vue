@@ -12,6 +12,10 @@
           <b-button variant="primary" v-b-tooltip.hover :title="getUsersString()" size="sm" ><b-badge variant="light">{{connections.length}}</b-badge>&nbsp;<b-icon icon="person-fill"></b-icon></b-button>
         </div>
         <div class="col" align="center">
+          <label>Start</label>
+          <input type="date" id="sprintStart" placeholder="DD/MM/YYYY" v-model="sprintStart" @input="sendItem()" size="sm"/>
+          <label>End</label>
+          <input type="date" id="sprintEnd" placeholder="DD/MM/YYYY"  v-model="sprintEnd" @input="sendItem()" size="sm"/>
           <b-badge v-if="!calculating" variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">{{statistics.done}}/{{statistics.all}}</b-badge>
           <b-spinner v-else calculating variant="warning" small></b-spinner>
         </div>
@@ -85,6 +89,8 @@ export default {
       syncUsers: false,
       editItemFlag: false,
       item: { title: null, description: null, sp: null, assigned: this.user.name, changed: null, },
+      sprintStart: null,
+      sprintEnd: null,
       board: [
           {
             name: 'To Do',
@@ -147,6 +153,8 @@ export default {
         this.showOverlay = false;
         this.syncBoard = true;
         console.log("SYNC_BOARD", data);
+        this.sprintStart = data.sprintStart;
+        this.sprintEnd = data.sprintEnd;
         this.board.splice(0, this.board.length);
         data.board.forEach(element => {
           this.board.push(element);
@@ -155,7 +163,8 @@ export default {
       });
     },
     sendItem() {
-      const data = { room: this.user.room,  board: this.board };
+      console.log("a verr", this.sprintStart);
+      const data = { room: this.user.room, sprintStart: this.sprintStart, sprintEnd: this.sprintEnd,  board: this.board };
       this.socket.emit('UPDATE_BOARD', data);
       console.log("UPDATE_BOARD", data);
       this.calculateStatistics();

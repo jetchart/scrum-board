@@ -12,6 +12,8 @@ module.exports = {
     boards.forEach(element => {
       if (element.room == room) {
         console.log("matcheoooooooo", element, board);
+        element.sprintStart = board.sprintStart;
+        element.sprintEnd = board.sprintEnd;
         element.board = board.board;
       }
     });
@@ -50,7 +52,7 @@ module.exports = {
       { 'cache-control': 'no-cache',
         'x-apikey': '5fc8efc289b5646938844118',
         'content-type': 'application/json' },
-        body: { 'room': room, 'board': board.board },
+        body: { 'room': room, sprintStart: board.sprintStart, sprintEnd: board.sprintEnd, 'board': board.board },
       json: true };
     request(options, function (error, response, body) {
       if (error) throw new Error(error);
@@ -63,7 +65,7 @@ module.exports = {
      { 'cache-control': 'no-cache',
        'x-apikey': '5fc8efc289b5646938844118',
        'content-type': 'application/json' },
-       body: { 'room': room, 'board': board.board },
+       body: { 'room': room, sprintStart: board.sprintStart, sprintEnd: board.sprintEnd, 'board': board.board },
     json: true };
     request(options, function (error, response, body) {
       if (error) throw new Error(error);

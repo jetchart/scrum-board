@@ -98,7 +98,7 @@ io.on('connection', socket => {
             }
           ]};
         } else {
-          boardRoom = {room: user.room, board: data[0].board};
+          boardRoom = {room: user.room, sprintStart: data[0].sprintStart, sprintEnd: data[0].sprintEnd, board: data[0].board};
           console.log('PARSEADO', boardRoom);
         }
         boards.push(boardRoom);
