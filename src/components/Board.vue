@@ -11,6 +11,10 @@
         <div class="col" align="left">
           <b-button variant="primary" v-b-tooltip.hover :title="getUsersString()" size="sm" ><b-badge variant="light">{{connections.length}}</b-badge>&nbsp;<b-icon icon="person-fill"></b-icon></b-button>
         </div>
+        <div class="col" align="center">
+          <b-badge v-if="!calculating" variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">{{statistics.done}}/{{statistics.all}}</b-badge>
+          <b-spinner v-else calculating variant="warning" small></b-spinner>
+        </div>
         <div class="col" align="right">
           <b-button variant="success" size="sm" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
         </div>
@@ -50,7 +54,6 @@
         <template #dd-card="{ cardData }">
           <custom-card
             :data="cardData"
-            @done="doneMarked"
             @deleteItem="deleteItem($event)"
             @editItem="editItem($event)"
           />
@@ -74,6 +77,8 @@ export default {
   },
   data() {
     return {
+      calculating: false,
+      statistics: {done: 0, all: 0},
       showOverlay: true,
       syncBoard: false,
       connections: [],
@@ -110,6 +115,18 @@ export default {
       return s;
       //return this.connections.map(function(c){ return c.user.name;}).join(' | ');
     },
+    calculateStatistics() {
+      this.calculating = true;
+      this.statistics.done = 0;
+      this.statistics.all = 0;
+      this.board.forEach(b => {
+          b.children.forEach(c => {
+            if (c.doneDate) this.statistics.done += Number(c.sp);
+            this.statistics.all += Number(c.sp);
+          })
+        });
+      this.calculating = false;
+    },
     init() {
       this.syncTasks = false;
       this.getItems();
@@ -141,9 +158,13 @@ export default {
       const data = { room: this.user.room,  board: this.board };
       this.socket.emit('UPDATE_BOARD', data);
       console.log("UPDATE_BOARD", data);
+      this.calculateStatistics();
     },
     newItem() {
-      if (!this.item.id) this.item.id = this.getNewId();
+      if (!this.item.id) {
+        this.item.id = this.getNewId();
+        this.createdDate = new Date();
+      }
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
       this.addChangedFlag(this.item, !this.editItemFlag? 'C' : 'U');
       this.item = { title: null, description: null, sp: null, assigned: this.user.name, changed: null, };
@@ -154,7 +175,8 @@ export default {
       this.removeChangesFlagTimeOut();
     },
     removeChangesFlagTimeOut() {
-      setTimeout(function(board) {
+      this.calculating = true;
+      setTimeout(function(board, statisticsMethod) {
         let boardIndex = 0;
         let childrenIndex = 0;
         let changes = [];
@@ -174,7 +196,8 @@ export default {
           if (!remove) board[c.board].children.splice(c.children, 1, item);
           if (remove) board[c.board].children.splice(c.children, 1);
         })
-      }, 4000, this.board);
+        statisticsMethod();
+      }, 3000, this.board, this.calculateStatistics);
     },
     getNewId() {
       let lastId = 0;
@@ -182,10 +205,6 @@ export default {
         if (c.id > lastId) lastId = c.id;
       }));
       return lastId + 1;
-    },
-    doneMarked(data) {
-      data.done = true;
-      alert(data.title);
     },
     deleteItem(data) {
       let i = 0;
@@ -218,7 +237,14 @@ export default {
     },
     destinationBucketDropEvent(columnName, result) {
       this.board.forEach(b => {
-        if (b.name == columnName && result.addedIndex != null) b.children[result.addedIndex].changed = 'U';
+        if (b.name == columnName && result.addedIndex != null) {
+          b.children[result.addedIndex].changed = 'U';
+          if (this.board[this.board.length -1 ].name == columnName) {
+            b.children[result.addedIndex].doneDate = new Date();
+          } else {
+            b.children[result.addedIndex].doneDate = null;
+          }
+        }
       });
       if (this.board[this.board.length -1 ].name == columnName) this.sendItem();
       this.removeChangesFlagTimeOut();

@@ -11,6 +11,7 @@ var connections = [];
 var tasks = [];
 var boards = [];
 var task = null;
+var useBD = false;
 
 io.on('connection', socket => {
 
@@ -46,6 +47,34 @@ io.on('connection', socket => {
     let boardRoom = boardService.filterAllByRoom(user.room, boards);
     console.log("FILTER BOARD", boardRoom);
     if (!boardRoom) {
+      if (!useBD) {
+        console.log("file", fs.existsSync(user.room + '.json'));
+        if (!fs.existsSync(user.room + '.json')) {
+          boardRoom = {room: user.room, board: [
+            {
+              name: 'To Do',
+              children: []
+            },
+            {
+              name: 'In Progress',
+              children: []
+            },
+            {
+              name: 'Testing',
+              children: []
+            },
+            {
+              name: 'Done',
+              children: []
+            }
+          ]};
+        } else {
+          const data = fs.readFileSync(user.room + '.json', {encoding:'utf8', flag:'r'}); 
+          boardRoom = JSON.parse(data);
+        }
+        boards.push(boardRoom);
+        io.to(socket.id).emit('SYNC_BOARD', boardRoom);
+      } else {
       boardService.getREST$(user.room).then(data => {
         data = JSON.parse(data);
         console.log("REST", data);
@@ -75,6 +104,7 @@ io.on('connection', socket => {
         boards.push(boardRoom);
         io.to(socket.id).emit('SYNC_BOARD', boardRoom);
       });
+    }
     } else {
       console.log("SYNC_BOARD", boardRoom);
       io.to(socket.id).emit('SYNC_BOARD', boardRoom);
@@ -115,32 +145,6 @@ io.on('connection', socket => {
     socket.in(data.user.room).emit('MESSAGE', data);
   });
 
-  /************* VOTES **************/
-
-  socket.on('SEND_FINAL_VALUE', (data) => {
-    socket.in(data.user.room).emit('FINAL_VALUE');
-    //Reset votes
-    connectionService.resetVotes(data, connections);
-    //Send users without votes
-    let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
-    io.to(socket.id).emit('SYNC', connectionsRoom);
-    socket.in(data.user.room).emit('SYNC', connectionsRoom);
-    /* Tasks */
-    task = null;
-    tasks.push({'room': data.user.room, 'task': data.task});
-    let tasksRoom = taskService.filterAllByRoom(data.user.room, tasks);
-    io.to(socket.id).emit('SYNC_TASKS', tasksRoom);
-    socket.in(data.user.room).emit('SYNC_TASKS', tasksRoom);
-  });
-
-  socket.on('SEND_CONFIRM', (data) => {
-    connectionService.updateVote(socket.id, data, connections);
-    let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
-    io.to(socket.id).emit('VALUE_CONFIRM', connectionsRoom);
-    socket.in(data.user.room).emit('VALUE_CONFIRM', connectionsRoom);
-
-  });
-
   /************* BOARD **************/
 
     socket.on('UPDATE_BOARD', (data) => {
@@ -149,33 +153,14 @@ io.on('connection', socket => {
       data.board.forEach(b => b.children = b.children.filter(c => c.changed != 'D'));
       data.board.forEach(b => b.children.forEach(c => c.changed = null));
       boardService.update(data.room, boards, data);
-      boardService.saveOrUpdate(data.room, data);
+      if (!useBD) {
+        fs.writeFile(data.room + '.json', JSON.stringify(data), function (err) {
+          if (err) return console.log("Error writing file", err);
+        });
+      } else {
+        boardService.saveOrUpdate(data.room, data);
+      }
     });
-
-  /************* TASKS **************/
-
-  socket.on('SEND_NEW_TASK', (data) => {
-    task = data;
-    socket.in(data.user.room).emit('NEW_TASK', data);
-  });
-
-  socket.on('SEND_DELETE_TASK', (data) => {
-    //socket.in(data.user.room).emit('DELETE_TASK', data);
-    /* Delete task */
-    const task = taskService.findById(data.id, tasks);
-    if (task != null && task.room != null) {
-      taskService.deleteById(task.task.id, tasks);
-      /* Sync tasks */
-      let tasksRoom = taskService.filterAllByRoom(data.user.room, tasks);
-      io.to(socket.id).emit('DELETE_TASK', tasksRoom);
-      socket.in(data.user.room).emit('DELETE_TASK', tasksRoom);
-    }
-  });
-
-  //Deprecated
-  socket.on('SEND_RESET', (data) => {
-    socket.in(data.user.room).emit('RESET', data);
-  });
 
 })
 
