@@ -19,7 +19,7 @@
           <input type="date" id="sprintStart" placeholder="DD/MM/YYYY" v-model="sprintStart" @input="sendItem()" size="sm"/>
           <label>End</label>
           <input type="date" id="sprintEnd" placeholder="DD/MM/YYYY"  v-model="sprintEnd" @input="sendItem()" size="sm"/>
-          <b-badge v-if="!calculating" variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">{{statistics.done}}/{{statistics.all}}</b-badge>
+          <b-badge v-if="!calculating" variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">{{statistics.done}}/{{statistics.all}} SP</b-badge>
           <b-spinner v-else calculating variant="warning" small></b-spinner>
           <b-badge v-if="!calculating" class="pointer" @click="burnDown()" v-b-tooltip.hover title="Burndown" variant="warning"><b-icon icon="bar-chart-fill"></b-icon></b-badge>
         </div>
@@ -179,6 +179,7 @@ export default {
       let day = 0;
       for (i=0; i<=sprintDurationTotal; i++) {
         this.board.forEach(b => b.children.forEach(c => {
+          console.log("check", moment(c.doneDate, 'YYYY-MM-DD'), sprintDay);
           if (moment(c.doneDate, 'YYYY-MM-DD') <= sprintDay) doneTemp += Number(c.sp);
         }));
         let burnDown = this.statistics.all - (this.statistics.all / sprintDurationTotalWithoutWeekend) * (day);
@@ -217,7 +218,7 @@ export default {
     newItem() {
       if (!this.item.id) {
         this.item.id = this.getNewId();
-        this.createdDate = new Date();
+        this.createdDate = moment().format('YYYY-MM-DD');
       }
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
       this.addChangedFlag(this.item, !this.editItemFlag? 'C' : 'U');
@@ -294,7 +295,7 @@ export default {
         if (b.name == columnName && result.addedIndex != null) {
           b.children[result.addedIndex].changed = 'U';
           if (this.board[this.board.length -1 ].name == columnName) {
-            b.children[result.addedIndex].doneDate = new Date();
+            b.children[result.addedIndex].doneDate = moment().format('YYYY-MM-DD');
           } else {
             b.children[result.addedIndex].doneDate = null;
           }
