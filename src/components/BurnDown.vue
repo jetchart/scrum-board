@@ -1,13 +1,18 @@
 <template>
   <div>
     <canvas id="my-chart" width="500" height="300"></canvas>
+    <div align="right">
+      <b-badge variant="success" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">Done: {{statistics.done}}</b-badge>
+      <b-badge variant="danger" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">Remaining: {{statistics.all - statistics.done}}</b-badge>
+      <b-badge variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">Total: {{statistics.all}}</b-badge>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'BurnDown',
-  props: ['sprintDays', 'chartModif'],
+  props: ['sprintDays', 'statistics', 'chartModif'],
   mounted() {
     this.generate();
   },

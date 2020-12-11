@@ -8,7 +8,7 @@
         </div>
       </template>
       <b-modal ref="chartModal" title="Burndown" centered ok-only ok-title="Close">
-        <BurnDown :sprintDays="sprintDays" :chartModif="chartModif"></BurnDown> 
+        <BurnDown :sprintDays="sprintDays" :chartModif="chartModif" :statistics="statistics"></BurnDown> 
       </b-modal>
       <div class="row">
         <div class="col" align="left">
@@ -21,7 +21,7 @@
           <input type="date" id="sprintEnd" placeholder="DD/MM/YYYY"  v-model="sprintEnd" @input="sendItem()" size="sm"/>
           <b-badge v-if="!calculating" variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">{{statistics.done}}/{{statistics.all}}</b-badge>
           <b-spinner v-else calculating variant="warning" small></b-spinner>
-          <b-badge v-if="!calculating" class="pointer" @click="burnDown()" v-b-tooltip.hover title="Burndown" variant="warning"><b-icon icon="bar-chart"></b-icon></b-badge>
+          <b-badge v-if="!calculating" class="pointer" @click="burnDown()" v-b-tooltip.hover title="Burndown" variant="warning"><b-icon icon="bar-chart-fill"></b-icon></b-badge>
         </div>
         <div class="col" align="right">
           <b-button variant="success" size="sm" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
