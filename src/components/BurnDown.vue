@@ -22,12 +22,15 @@ export default {
             label: 'Done',
             fill: false,
             borderColor: 'rgba(30, 139, 195, 1)',
+            pointBackgroundColor: 'rgba(30, 139, 195, 1)',
+            lineTension: 0,
             data: this.sprintDays.map(s => s.done)
           },
           {
             label: 'Estimated',
             fill: false,
             borderColor: 'rgba(240, 52, 52, 1)',
+            pointBackgroundColor: 'rgba(240, 52, 52, 1)',
             data: this.sprintDays.map(s => s.burndown)
           },
         ]
