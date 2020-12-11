@@ -164,25 +164,35 @@ export default {
       var end = moment(this.sprintEnd, "YYYY-MM-DD");
       var today = moment().startOf('day');
       const sprintDurationTotal = moment.duration(end.diff(start)).asDays();
+      let sprintDurationTotalWithoutWeekend = 0;
+      for (i=0; i<=sprintDurationTotal; i++) {
+        let sprintDay = moment(this.sprintStart, "YYYY-MM-DD");
+        if (!this.isWeekend(sprintDay)) sprintDurationTotalWithoutWeekend++;
+        sprintDay.add(1, 'day');
+      }
       const sprintDurationRemaining = moment.duration(end.diff(today)).asDays();
       const sprintDurationSpent = moment.duration(today.diff(start)).asDays();
-
       let i = 0;
       this.sprintDays = [];
       let sprintDay = moment(this.sprintStart, "YYYY-MM-DD");
       let doneTemp = 0;
+      let day = 0;
       for (i=0; i<=sprintDurationTotal; i++) {
         this.board.forEach(b => b.children.forEach(c => {
           if (moment(c.doneDate, 'YYYY-MM-DD') <= sprintDay) doneTemp += Number(c.sp);
         }));
-        let burnDown = (this.statistics.all / sprintDurationTotal) * (i);
+        let burnDown = this.statistics.all - (this.statistics.all / sprintDurationTotalWithoutWeekend) * (day);
         let done = sprintDurationSpent >= i ? this.statistics.all - doneTemp : null;
-        this.sprintDays.push({sprintDay: moment(sprintDay), done: done, burndown: this.statistics.all - burnDown,});
+        this.sprintDays.push({sprintDay: moment(sprintDay), done: done, burndown: burnDown,});
         sprintDay.add(1, 'day');
         doneTemp = 0;
+        if (!this.isWeekend(sprintDay)) day++;
       }
       this.chartModif = new Date().toISOString();
       this.$refs.chartModal.show();
+    },
+    isWeekend(date) {
+      return date.day() == 6 || date.day() == 0;
     },
     getItems() {
       this.socket.on('SYNC_BOARD', (data) => {
@@ -199,7 +209,6 @@ export default {
       });
     },
     sendItem() {
-      console.log("a verr", this.sprintStart);
       const data = { room: this.user.room, sprintStart: this.sprintStart, sprintEnd: this.sprintEnd,  board: this.board };
       this.socket.emit('UPDATE_BOARD', data);
       console.log("UPDATE_BOARD", data);
