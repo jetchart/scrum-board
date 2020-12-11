@@ -15,11 +15,12 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "vue-smooth-dnd": "^0.8.1",
     "bootstrap-vue": "^2.9.0",
+    "chart.js": "^2.9.4",
     "express": "^4.15.2",
     "jspdf": "^1.5.3",
     "lodash": "^4.17.15",
+    "moment": "^2.29.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "v-movable": "^0.3.2",
@@ -28,9 +29,11 @@
     "vue-json-excel": "^0.3.0",
     "vue-lodash": "^2.1.2",
     "vue-markdown": "^2.2.4",
+    "vue-moment": "^4.1.0",
     "vue-prism": "^1.0.5",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.1.6",
+    "vue-smooth-dnd": "^0.8.1",
     "vue-socket.io": "^3.0.7",
     "vuetify": "^2.2.19",
     "vuex": "^3.0.1"

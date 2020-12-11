@@ -7,6 +7,9 @@
           <p id="cancel-label">{{showOverlay || !syncBoard || !syncUsers? 'Please wait...' : 'Reconnecting...'}}</p>
         </div>
       </template>
+      <b-modal ref="chartModal" title="Burndown" centered ok-only ok-title="Close">
+        <BurnDown :sprintDays="sprintDays" :chartModif="chartModif"></BurnDown> 
+      </b-modal>
       <div class="row">
         <div class="col" align="left">
           <b-button variant="primary" v-b-tooltip.hover :title="getUsersString()" size="sm" ><b-badge variant="light">{{connections.length}}</b-badge>&nbsp;<b-icon icon="person-fill"></b-icon></b-button>
@@ -18,6 +21,7 @@
           <input type="date" id="sprintEnd" placeholder="DD/MM/YYYY"  v-model="sprintEnd" @input="sendItem()" size="sm"/>
           <b-badge v-if="!calculating" variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">{{statistics.done}}/{{statistics.all}}</b-badge>
           <b-spinner v-else calculating variant="warning" small></b-spinner>
+          <b-badge v-if="!calculating" class="pointer" @click="burnDown()" variant="warning"><b-icon icon="bar-chart"></b-icon></b-badge>
         </div>
         <div class="col" align="right">
           <b-button variant="success" size="sm" @click="openNewItemModal()"><b-icon icon="plus-circle"></b-icon></b-button>
@@ -71,16 +75,22 @@
 /* istanbul ignore file */
 import DragDrop from './../vue-drag-n-drop.vue';
 import CustomCard from './CustomCard.vue';
+import BurnDown from './BurnDown.vue';
+import moment from 'moment';
+import Chart from 'chart.js';
 
 export default {
   name: 'app',
   props: ['socket', 'user', 'options', ],
   components: {
     DragDrop,
-    CustomCard
+    CustomCard,
+    BurnDown,
   },
   data() {
     return {
+      chartModif: null,
+      sprintDays: [],
       calculating: false,
       statistics: {done: 0, all: 0},
       showOverlay: true,
@@ -147,6 +157,32 @@ export default {
       },
     openNewItemModal() {
       this.$refs.newItemModal.show();
+    },
+    burnDown() {
+      this.showChart = true;
+      var start = moment(this.sprintStart, "YYYY-MM-DD");
+      var end = moment(this.sprintEnd, "YYYY-MM-DD");
+      var today = moment().startOf('day');
+      const sprintDurationTotal = moment.duration(end.diff(start)).asDays();
+      const sprintDurationRemaining = moment.duration(end.diff(today)).asDays();
+      const sprintDurationSpent = moment.duration(today.diff(start)).asDays();
+
+      let i = 0;
+      this.sprintDays = [];
+      let sprintDay = moment(this.sprintStart, "YYYY-MM-DD");
+      let doneTemp = 0;
+      for (i=0; i<=sprintDurationTotal; i++) {
+        this.board.forEach(b => b.children.forEach(c => {
+          if (moment(c.doneDate, 'YYYY-MM-DD') <= sprintDay) doneTemp += Number(c.sp);
+        }));
+        let burnDown = (this.statistics.all / sprintDurationTotal) * (i);
+        let done = sprintDurationSpent >= i ? this.statistics.all - doneTemp : null;
+        this.sprintDays.push({sprintDay: moment(sprintDay), done: done, burndown: this.statistics.all - burnDown,});
+        sprintDay.add(1, 'day');
+        doneTemp = 0;
+      }
+      this.chartModif = new Date().toISOString();
+      this.$refs.chartModal.show();
     },
     getItems() {
       this.socket.on('SYNC_BOARD', (data) => {
@@ -278,5 +314,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.pointer {
+  cursor: pointer;
 }
 </style>

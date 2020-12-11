@@ -10,11 +10,13 @@ import VueClipboard from 'vue-clipboard2'
 import jspdf from 'jspdf'
 import JsonExcel from "vue-json-excel";
 import movable from "v-movable";
+import Moment from "moment";
 
 
 
 Vue.config.productionTip = false
 
+Vue.use(Moment);
 Vue.use(Vuetify)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
