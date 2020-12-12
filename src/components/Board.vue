@@ -295,7 +295,8 @@ export default {
         if (b.name == columnName && result.addedIndex != null) {
           b.children[result.addedIndex].changed = 'U';
           if (this.board[this.board.length -1 ].name == columnName) {
-            b.children[result.addedIndex].doneDate = moment().format('YYYY-MM-DD');
+            if (!b.children[result.addedIndex].doneDate)
+              b.children[result.addedIndex].doneDate = moment().format('YYYY-MM-DD');
           } else {
             b.children[result.addedIndex].doneDate = null;
           }
