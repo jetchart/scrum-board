@@ -24,12 +24,12 @@ export default {
         labels: this.sprintDays.map(s => s.sprintDay.format('DD/MM/YYYY')),
         datasets: [
           {
-            label: 'Done',
+            label: 'Burned',
             fill: false,
             borderColor: 'rgba(30, 139, 195, 1)',
             pointBackgroundColor: 'rgba(30, 139, 195, 1)',
             lineTension: 0,
-            data: this.sprintDays.map(s => s.done)
+            data: this.sprintDays.map(s => s.burned)
           },
           {
             label: 'Estimated',
@@ -37,7 +37,7 @@ export default {
             borderColor: 'rgba(240, 52, 52, 1)',
             pointBackgroundColor: 'rgba(240, 52, 52, 1)',
             lineTension: 0,
-            data: this.sprintDays.map(s => s.burndown)
+            data: this.sprintDays.map(s => s.estimate)
           },
         ]
       }

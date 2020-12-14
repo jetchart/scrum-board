@@ -182,9 +182,9 @@ export default {
           console.log("check", moment(c.doneDate, 'YYYY-MM-DD'), sprintDay);
           if (moment(c.doneDate, 'YYYY-MM-DD') <= sprintDay) doneTemp += Number(c.sp);
         }));
-        let burnDown = this.statistics.all - (this.statistics.all / sprintDurationTotalWithoutWeekend) * (day);
-        let done = sprintDurationSpent >= i ? this.statistics.all - doneTemp : null;
-        this.sprintDays.push({sprintDay: moment(sprintDay), done: done, burndown: burnDown,});
+        let estimate = this.statistics.all - (this.statistics.all / sprintDurationTotalWithoutWeekend) * (day);
+        let burned = sprintDurationSpent >= i ? this.statistics.all - doneTemp : null;
+        this.sprintDays.push({sprintDay: moment(sprintDay), burned: burned, estimate: estimate,});
         sprintDay.add(1, 'day');
         doneTemp = 0;
         if (!this.isWeekend(sprintDay)) day++;
