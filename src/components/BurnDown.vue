@@ -24,12 +24,12 @@ export default {
         labels: this.sprintDays.map(s => s.sprintDay.format('DD/MM/YYYY')),
         datasets: [
           {
-            label: 'Burned',
+            label: 'Remaining',
             fill: false,
             borderColor: 'rgba(30, 139, 195, 1)',
             pointBackgroundColor: 'rgba(30, 139, 195, 1)',
             lineTension: 0,
-            data: this.sprintDays.map(s => s.burned)
+            data: this.sprintDays.map(s => s.remaining)
           },
           {
             label: 'Estimated',
