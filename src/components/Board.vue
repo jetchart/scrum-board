@@ -165,8 +165,8 @@ export default {
       var today = moment().startOf('day');
       const sprintDurationTotal = moment.duration(end.diff(start)).asDays();
       let sprintDurationTotalWithoutWeekend = 0;
+      let sprintDay = moment(this.sprintStart, "YYYY-MM-DD");
       for (i=0; i<=sprintDurationTotal; i++) {
-        let sprintDay = moment(this.sprintStart, "YYYY-MM-DD");
         if (!this.isWeekend(sprintDay)) sprintDurationTotalWithoutWeekend++;
         sprintDay.add(1, 'day');
       }
@@ -174,7 +174,7 @@ export default {
       const sprintDurationSpent = moment.duration(today.diff(start)).asDays();
       let i = 0;
       this.sprintDays = [];
-      let sprintDay = moment(this.sprintStart, "YYYY-MM-DD");
+      sprintDay = moment(this.sprintStart, "YYYY-MM-DD");
       let doneTemp = 0;
       let day = 0;
       for (i=0; i<=sprintDurationTotal; i++) {
@@ -182,12 +182,12 @@ export default {
           console.log("check", moment(c.doneDate, 'YYYY-MM-DD'), sprintDay);
           if (moment(c.doneDate, 'YYYY-MM-DD') <= sprintDay) doneTemp += Number(c.sp);
         }));
-        let estimate = this.statistics.all - (this.statistics.all / sprintDurationTotalWithoutWeekend) * (day);
+        let estimate = this.statistics.all - (this.statistics.all / (sprintDurationTotalWithoutWeekend - 1)) * (day);
         let remaining = sprintDurationSpent >= i ? this.statistics.all - doneTemp : null;
         this.sprintDays.push({sprintDay: moment(sprintDay), remaining: remaining, estimate: estimate,});
+        if (!this.isWeekend(sprintDay)) day++;
         sprintDay.add(1, 'day');
         doneTemp = 0;
-        if (!this.isWeekend(sprintDay)) day++;
       }
       this.chartModif = new Date().toISOString();
       this.$refs.chartModal.show();
