@@ -117,15 +117,15 @@ export default {
 }
 
 .userStory {
-  background-color: #fcfdbd;
+  background-color: #fcfdbd !important;
 }
 
 .task {
-  background-color: rgb(226, 237, 247);
+  background-color: rgb(226, 237, 247) !important;
 }
 
 .bug {
-  background-color: rgb(253, 219, 219);
+  background-color: rgb(253, 219, 219) !important;
 }
 
 </style>
