@@ -1,5 +1,5 @@
 <template>
-  <div class="cc-card">
+  <div class="cc-card" :class="[{ userStory: data.type == 'U. Story' }, { task: data.type == 'Task' }, { bug: data.type == 'Bug' }, { userStory: data.type == null },]">
     <div class="row">
       <div class="col card-title" align="left">
         {{data.title}}
@@ -114,6 +114,18 @@ export default {
   0% { opacity: 0; }
   50% { opacity: 1; }
   100% { opacity: 0; }
+}
+
+.userStory {
+  background-color: #fcfdbd;
+}
+
+.task {
+  background-color: rgb(226, 237, 247);
+}
+
+.bug {
+  background-color: rgb(253, 219, 219);
 }
 
 </style>

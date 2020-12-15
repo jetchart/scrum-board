@@ -45,6 +45,14 @@
           <label for="assigned">Assigned to</label>
           <input v-model="item.assigned" type="text" class="form-control" id="assigned">
         </div>
+        <div class="form-group">
+          <label for="assigned">Type</label>
+          <select v-model="item.type">
+            <option>U. Story</option>
+            <option>Task</option>
+            <option>Bug</option>
+          </select>
+        </div>
       </b-modal>
 
       <drag-drop
@@ -98,7 +106,7 @@ export default {
       connections: [],
       syncUsers: false,
       editItemFlag: false,
-      item: { title: null, description: null, sp: null, assigned: this.user.name, changed: null, },
+      item: { title: null, description: null, sp: null, assigned: this.user.name, changed: null, type: 'U. Story'},
       sprintStart: null,
       sprintEnd: null,
       board: [
@@ -222,7 +230,7 @@ export default {
       }
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
       this.addChangedFlag(this.item, !this.editItemFlag? 'C' : 'U');
-      this.item = { title: null, description: null, sp: null, assigned: this.user.name, changed: null, };
+      this.item = { title: null, description: null, sp: null, assigned: this.user.name, changed: null, type: 'U. Story'};
       this.sendItem();
     },
     addChangedFlag(item, change) {
