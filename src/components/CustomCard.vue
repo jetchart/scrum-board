@@ -1,5 +1,8 @@
 <template>
-  <div class="cc-card" :class="[{ userStory: data.type == 'U. Story' }, { task: data.type == 'Task' }, { bug: data.type == 'Bug' }, { userStory: data.type == null },]">
+  <div v-if="data.type != 'Hidden' || (data.type == 'Hidden' && data.assigned == user.name)" class="cc-card" 
+        :class="[{ userStory: data.type == 'U. Story' }, { hidden: data.type == 'Hidden' },
+                            { task: data.type == 'Task' }, { bug: data.type == 'Bug' }, 
+                            { userStory: data.type == null },]">
     <div class="row">
       <div class="col card-title" align="left">
         {{data.title}}
@@ -25,6 +28,7 @@
         <b-badge v-if="data.changed == 'C'" class="animation-show h6 mb-0" variant="warning">NEW</b-badge>
         <b-badge v-if="data.changed == 'U'" class="animation-show h6 mb-0" variant="warning">UPDATED</b-badge>
         <b-badge v-if="data.changed == 'D'" class="animation-show h6 mb-0" variant="danger">DELETED</b-badge>
+        <b-badge v-if="data.type == 'Hidden'" class="h6 mb-0" variant="secondary">HIDDEN</b-badge>
       </div>
     </div>
 
@@ -34,7 +38,7 @@
 <script>
 export default {
   name: 'CustomCard',
-  props: ['data', 'index'],
+  props: ['data', 'index', 'user'],
   methods: {
     showDeleteItemModal() {
       this.$refs.deleteItemModal.show();
@@ -126,6 +130,10 @@ export default {
 
 .bug {
   background-color: rgb(253, 219, 219) !important;
+}
+
+.hidden {
+  background-color: rgba(255, 255, 255, 0.582) !important;
 }
 
 </style>

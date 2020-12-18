@@ -51,6 +51,7 @@
             <option>U. Story</option>
             <option>Task</option>
             <option>Bug</option>
+            <option>Hidden</option>
           </select>
         </div>
       </b-modal>
@@ -69,6 +70,7 @@
       >
         <template #dd-card="{ cardData }">
           <custom-card
+            :user="user"
             :data="cardData"
             @deleteItem="deleteItem($event)"
             @editItem="editItem($event)"
