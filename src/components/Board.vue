@@ -32,31 +32,44 @@
       </div>
       <!-- Modal new task -->
       <b-modal ref="newItemModal" title="New item" centered @ok="newItem()" @hide="editItemFlag = false">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input v-model="item.title" type="text" class="form-control" id="title">
+        <div class="row">
+          <div class="col form-group">
+            <label for="title">Title</label>
+            <input v-model="item.title" type="text" class="form-control" id="title">
+          </div>
         </div>
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea v-model="item.description" class="form-control" id="description" rows="3"></textarea>
+        <div class="row">
+          <div class="col form-group">
+            <label for="description">Description</label>
+            <textarea v-model="item.description" class="form-control" id="description" rows="4"></textarea>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="storyPoints">Story points</label>
-          <input v-model="item.sp" type="text" class="form-control" id="storyPoints">
+        <div class="row">
+          <div class="form-group col-4">
+            <label for="storyPoints">Story points</label>
+            <input v-model="item.sp" type="text" class="form-control" id="storyPoints">
+          </div>
+          <div class="form-group col-4">
+            <label for="assigned">Assigned to</label>
+            <input v-model="item.assigned" type="text" class="form-control" id="assigned">
+          </div>
+          <div class="col-4 form-group">
+            <label >Type</label>
+            <b-select v-model="item.type">
+              <option>U. Story</option>
+              <option>Task</option>
+              <option>Bug</option>
+            </b-select>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="assigned">Assigned to</label>
-          <input v-model="item.assigned" type="text" class="form-control" id="assigned">
+        <div class="row">
+          <div class="col form-group">
+            <b-form-checkbox v-model="item.hidden" name="check-button" switch>
+              Hidden
+            </b-form-checkbox>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="assigned">Type</label>
-          <select v-model="item.type">
-            <option>U. Story</option>
-            <option>Task</option>
-            <option>Bug</option>
-            <option>Hidden</option>
-          </select>
-        </div>
+
       </b-modal>
 
       <drag-drop
