@@ -62,7 +62,7 @@
             </b-select>
           </div>
         </div>
-        <div class="row">
+        <div v-if="item.assigned == user.name" class="row">
           <div class="col form-group">
             <b-form-checkbox v-model="item.hidden" name="check-button" switch>
               Hidden
