@@ -1,12 +1,14 @@
 <template>
   <div class="vue-drag-n-drop">
-    
     <div class="dd-result-group">
       <div 
         v-for="(item,ind) in dropGroups"
         v-bind:key="ind"
         class="dd-drop-container">
-        <span class="item-title">{{item.name}}</span>
+        <span v-if="!edit" class="item-title">{{item.name}}</span>
+        <div v-else>
+          <b-form-input type="text" v-model="item.name" size="sm"></b-form-input>
+        </div>
         <hr>
         <Container 
           group-name="col"
@@ -27,7 +29,10 @@
         </Container>
       </div>
     </div>
-
+    <div class="col" align="left">
+      <b-icon v-if="!edit" class="h6 mb-0 pointer" icon="pencil-square" variant="secondary" @click="edit = true"></b-icon>
+      <b-icon v-else class="h6 mb-0 pointer" icon="check" variant="secondary" @click="newColumnName()"></b-icon>
+    </div>
   </div>
 </template>
 
@@ -45,6 +50,8 @@ export default {
     return {
       items:[],
       dropGroups: [],
+      itemName: null,
+      edit: false,
     }
   },
 
@@ -60,6 +67,10 @@ export default {
   },
 
   methods: {
+    newColumnName() {
+      this.edit = false;
+      this.$emit('newColumnName', this.items);
+    },  
     /** 
      * Even that runs when an item is dropped in the original list bucket.
      * @param {Object} dropResult Holds the value of what is dropped.

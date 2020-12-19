@@ -67,6 +67,7 @@
         @dropInOriginalBucket="originalBucketDropEvent"
         @dropInDestinationBucket="destinationBucketDropEvent"
         @newItem="newItem($event)"
+        @newColumnName="newColumnName($event)"
       >
         <template #dd-card="{ cardData }">
           <custom-card
@@ -135,6 +136,10 @@ export default {
     this.init();
   },
   methods: {
+    newColumnName(board) {
+      this.board.board = board;
+      this.sendItem();
+    },
     getUsersString() {
       let s = "";
       this.connections.forEach(c => s += '[' + c.user.name + "] ");
