@@ -54,15 +54,21 @@
             <input v-model="item.assigned" type="text" class="form-control" id="assigned">
           </div>
           <div class="col-4 form-group">
-            <label >Type</label>
+            <label>
+              Type
+              <b-badge v-if="item.type == 'U. Story'" variant="warning">&nbsp;</b-badge>
+              <b-badge v-if="item.type == 'Task'" variant="success">&nbsp;</b-badge>
+              <b-badge v-if="item.type == 'Bug'" variant="danger">&nbsp;</b-badge>
+            </label>
             <b-select v-model="item.type">
               <option>U. Story</option>
               <option>Task</option>
               <option>Bug</option>
             </b-select>
+
           </div>
         </div>
-        <div v-if="item.assigned == user.name" class="row">
+        <div class="row">
           <div class="col form-group">
             <b-form-checkbox v-model="item.hidden" name="check-button" switch>
               Hidden
@@ -252,6 +258,7 @@ export default {
         this.item.id = this.getNewId();
         this.createdDate = moment().format('YYYY-MM-DD');
       }
+      if (this.item.hidden) this.assigned = this.user.name;
       if (!this.editItemFlag) this.board[0].children.push(Object.assign(this.item, {}));
       this.addChangedFlag(this.item, !this.editItemFlag? 'C' : 'U');
       this.item = { title: null, description: null, sp: null, assigned: this.user.name, changed: null, type: 'U. Story'};
