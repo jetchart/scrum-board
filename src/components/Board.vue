@@ -97,6 +97,7 @@
             :data="cardData"
             @deleteItem="deleteItem($event)"
             @editItem="editItem($event)"
+            @hiddenOf="hiddenOf($event)"
           />
         </template>
       </drag-drop>
@@ -326,6 +327,11 @@ export default {
       this.editItemFlag = true;
       this.item = Object.assign(item, {});
       this.$refs.newItemModal.show();
+    },
+    hiddenOf(item) {
+      item.hidden = false;
+      console.log("dsadsa", item);
+      this.sendItem();
     },
     originalBucketDropEvent(result) {
     },

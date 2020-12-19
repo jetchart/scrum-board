@@ -15,6 +15,11 @@
       <b-modal ref="deleteItemModal" title="Delete" centered @ok="deleteItem()">
         <p>Are you sure you want to delete this item?</p>
       </b-modal>
+      <!-- Modal delete item -->
+      <b-modal ref="hiddenOffModal" title="Disable hiding" centered @ok="$emit('hiddenOf', data)">
+        <p>
+          The task will be visible. Continue?</p>
+      </b-modal>
     </div>
     <p>
       {{data.description}}
@@ -28,7 +33,10 @@
         <b-badge v-if="data.changed == 'C'" class="animation-show h6 mb-0" variant="warning">NEW</b-badge>
         <b-badge v-if="data.changed == 'U'" class="animation-show h6 mb-0" variant="warning">UPDATED</b-badge>
         <b-badge v-if="data.changed == 'D'" class="animation-show h6 mb-0" variant="danger">DELETED</b-badge>
-        <b-badge v-if="data.hidden" class="h6 mb-0" variant="secondary">HIDDEN</b-badge>
+        <b-badge v-if="data.hidden" class="h6 mb-0" variant="secondary" >
+          HIDDEN
+          <b-badge class="pointer" variant="secondary" @click="$refs.hiddenOffModal.show()">X</b-badge>
+          </b-badge>
       </div>
     </div>
 

@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="col" align="left">
-      <b-icon v-if="!edit" class="h6 mb-0 pointer" icon="pencil-square" variant="secondary" @click="edit = true"></b-icon>
+      <b-icon v-if="!edit" class="h6 mb-0 pointer" icon="wrench" variant="secondary" @click="edit = true"></b-icon>
       <b-icon v-else class="h6 mb-0 pointer" icon="check" variant="secondary" @click="newColumnName()"></b-icon>
     </div>
   </div>
