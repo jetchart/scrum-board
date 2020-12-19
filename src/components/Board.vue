@@ -15,10 +15,13 @@
           <b-button variant="primary" v-b-tooltip.hover :title="getUsersString()" size="sm" ><b-badge variant="light">{{connections.length}}</b-badge>&nbsp;<b-icon icon="person-fill"></b-icon></b-button>
         </div>
         <div class="col" align="center">
-          <label>Start</label>
-          <input type="date" id="sprintStart" placeholder="DD/MM/YYYY" v-model="sprintStart" @input="sendItem()" size="sm"/>
-          <label>End</label>
-          <input type="date" id="sprintEnd" placeholder="DD/MM/YYYY"  v-model="sprintEnd" @input="sendItem()" size="sm"/>
+          <b-icon v-if="!edit" class="h6 mb-0 pointer" icon="pencil-square" variant="secondary" @click="edit = true"></b-icon>
+          <b-icon v-else class="h6 mb-0 pointer" icon="check" variant="secondary" @click="edit=false; sendItem();"></b-icon>
+          <br>
+          <label>Start </label>
+          <input :disabled="!edit" type="date" id="sprintStart" placeholder="DD/MM/YYYY" v-model="sprintStart" size="sm"/>
+          <label>End </label>
+          <input :disabled="!edit" type="date" id="sprintEnd" placeholder="DD/MM/YYYY"  v-model="sprintEnd" size="sm"/>
           <b-badge v-if="!calculating" variant="warning" class="h2 mb-0" v-b-tooltip.hover title="Story points: Done/All">{{statistics.done}}/{{statistics.all}} SP</b-badge>
           <b-spinner v-else calculating variant="warning" small></b-spinner>
           <b-badge v-if="!calculating" class="pointer" @click="burnDown()" v-b-tooltip.hover title="Burndown" variant="warning"><b-icon icon="bar-chart-fill"></b-icon></b-badge>
@@ -112,6 +115,7 @@ export default {
       item: { title: null, description: null, sp: null, assigned: this.user.name, changed: null, type: 'U. Story'},
       sprintStart: null,
       sprintEnd: null,
+      edit: false,
       board: [
           {
             name: 'To Do',
