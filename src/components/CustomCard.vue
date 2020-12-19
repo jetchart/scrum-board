@@ -1,6 +1,6 @@
 <template>
   <div v-if="!data.hidden || (data.hidden && data.assigned == user.name)" class="cc-card" 
-        :class="[{ userStory: data.type == 'U. Story' }, { hidden: data.hidden },
+        :class="[{ userStory: data.type == 'U. Story' }, 
                             { task: data.type == 'Task' }, { bug: data.type == 'Bug' }, 
                             { userStory: data.type == null },]">
     <div class="row">
@@ -28,7 +28,7 @@
         <b-badge v-if="data.changed == 'C'" class="animation-show h6 mb-0" variant="warning">NEW</b-badge>
         <b-badge v-if="data.changed == 'U'" class="animation-show h6 mb-0" variant="warning">UPDATED</b-badge>
         <b-badge v-if="data.changed == 'D'" class="animation-show h6 mb-0" variant="danger">DELETED</b-badge>
-        <b-badge v-if="data.hidden" class="h6 mb-0" variant="secondary">HIDDEN</b-badge>
+        <b-badge v-if="data.hidden" class="animation-show h6 mb-0" variant="secondary">HIDDEN</b-badge>
       </div>
     </div>
 
@@ -130,10 +130,6 @@ export default {
 
 .bug {
   background-color: rgb(248, 205, 205) !important;
-}
-
-.hidden {
-  background-color: rgba(255, 255, 255, 0.582) !important;
 }
 
 </style>
