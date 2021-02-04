@@ -5,7 +5,7 @@
                             { userStory: data.type == null },]">
     <div class="row">
       <div class="col card-title" align="left">
-        <template v-if="data.title && data.title.startsWith('#')"><a class="url-title" :href="'https://redmine-dit.cloudint.afip.gob.ar/issues/' + data.title.substring(1, data.title.length - 1)" target="_blank">{{data.title}}</a></template>
+        <template v-if="data.title && data.title.startsWith('#')"><a class="url-title" :href="'https://redmine-dit.cloudint.afip.gob.ar/issues/' + data.title.substring(1, data.title.length)" target="_blank">{{data.title}}</a></template>
         <template v-if="data.title && data.title.startsWith('http')"><a class="url-title" :href="data.title" target="_blank">{{data.title.split('/')[data.title.split('/').length - 1]}}</a></template>
         <template v-if="!data.title || (!data.title.startsWith('#') && !data.title.startsWith('http'))">{{data.title}}</template>
         </div>
