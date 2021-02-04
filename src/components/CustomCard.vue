@@ -5,7 +5,9 @@
                             { userStory: data.type == null },]">
     <div class="row">
       <div class="col card-title" align="left">
-        {{data.title}}
+        <template v-if="data.title && data.title.startsWith('#')"><a class="url-title" :href="'https://redmine-dit.cloudint.afip.gob.ar/issues/' + data.title.substring(1, data.title.length - 1)" target="_blank">{{data.title}}</a></template>
+        <template v-if="data.title && data.title.startsWith('http')"><a class="url-title" :href="data.title" target="_blank">{{data.title.split('/')[data.title.split('/').length - 1]}}</a></template>
+        <template v-if="!data.title || (!data.title.startsWith('#') && !data.title.startsWith('http'))">{{data.title}}</template>
         </div>
       <div class="col" align="right">
         <b-icon class="h6 mb-0 pointer" icon="pencil-square" variant="primary" @click="editItem()"></b-icon>
@@ -138,6 +140,11 @@ export default {
 
 .bug {
   background-color: rgb(248, 205, 205) !important;
+}
+
+.url-title {
+  color: #2c3e50;
+  text-decoration: underline;
 }
 
 </style>
