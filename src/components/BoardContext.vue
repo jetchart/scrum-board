@@ -18,7 +18,7 @@
     data () {
       return {
         user: {},
-        url: location.hostname === 'localhost' ? 'localhost:3000' : 'https://scrum-board-vue.herokuapp.com/',
+        url: location.hostname === 'localhost' ? 'localhost:3000/api' : 'https://scrum-board-vue.herokuapp.com/api',
         options: [0.5, 1, 2, 3, 5],
       }
     },
@@ -45,7 +45,7 @@
       this.user.name = this.$route.params.name;
       this.user.room = this.$route.params.room;
       if (!this.user.name || !this.user.room)
-        this.$router.push("/");
+        this.$router.push("/app/");
       this.socket = this.getSocket;
       if (!this.socket || !this.socket.connected) {
         this.socket = io(this.url);
