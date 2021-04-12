@@ -295,11 +295,7 @@ export default {
       }, 3000, this.board, this.calculateStatistics);
     },
     getNewId() {
-      let lastId = 0;
-      this.board.forEach(b => b.children.forEach(c => {
-        if (c.id > lastId) lastId = c.id;
-      }));
-      return lastId + 1;
+      return new Date().getTime();
     },
     deleteItem(data) {
       let i = 0;
