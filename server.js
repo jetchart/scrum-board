@@ -11,7 +11,7 @@ var connections = [];
 var tasks = [];
 var boards = [];
 var task = null;
-var useBD = true;
+var useBD = false;
 
 io
 .of('/api')
