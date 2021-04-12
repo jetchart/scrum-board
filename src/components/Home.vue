@@ -30,7 +30,7 @@
          this.goToBoardContext()
       },
       goToBoardContext() {
-        this.$router.push('/board/' + this.user.room + '/' + this.user.name)
+        this.$router.push('/app/board/' + this.user.room + '/' + this.user.name)
         //his.$router.push({ name: 'board', params: { room: this.user.room, name: this.user.name }})
       },
       makeToast(variant, title, description) {

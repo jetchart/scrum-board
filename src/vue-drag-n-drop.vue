@@ -258,8 +258,8 @@ export default {
   cursor: pointer;
 }
 
-.prueba {
-  background-color: red;
+.color {
+  background-color: red !important;
 }
 
 .item-title {

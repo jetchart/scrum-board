@@ -47,7 +47,7 @@
     methods: {
       quit() {
         this.unsubscribe();
-        this.$router.push("/");
+        this.$router.push("/app/");
       },
       unsubscribe() {
         this.getSocket.emit('unsubscribe');

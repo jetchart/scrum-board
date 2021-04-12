@@ -8,7 +8,7 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/app/',
       name: 'Home',
       component: Home
     },
@@ -17,12 +17,12 @@ export default new Router({
       redirect: {name: 'Home'},
     },
     {
-      path: '/board/:room',
+      path: '/app/board/:room',
       component: Home
     },
     {
       name: 'board',
-      path: '/board/:room/:name',
+      path: '/app/board/:room/:name',
       component: BoardContext
     },
   ],
