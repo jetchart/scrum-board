@@ -151,7 +151,7 @@ io
 
     socket.on('UPDATE_BOARD', (data) => {
       console.log("UPDATE_BOARD", JSON.stringify(data));
-      socket.broadcast.in(data.room).emit('SYNC_BOARD', data);
+      socket.in(data.room).emit('SYNC_BOARD', data);
       data.board.forEach(b => b.children = b.children.filter(c => c.changed != 'D'));
       data.board.forEach(b => b.children.forEach(c => c.changed = null));
       boardService.update(data.room, boards, data);
