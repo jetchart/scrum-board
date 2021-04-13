@@ -12,9 +12,10 @@ var tasks = [];
 var boards = [];
 var task = null;
 var useBD = true;
+var contextPath = '/api';
 
 io
-.of('/api')
+.of(contextPath)
 .on('connection', socket => {
 
 	//io.set('close timeout', 60*60*24);
@@ -28,7 +29,7 @@ io
     //Check if exists other user with same name and room
     const existsOtherByNameAndRom = connectionService.existsOtherByNameAndRom(socket.id, user.name, user.room, connections);
     if (existsOtherByNameAndRom != null) {
-      io.of('/api').to(socket.id).emit('REDIRECT');
+      io.of(contextPath).to(socket.id).emit('REDIRECT');
       return;
     }
 
@@ -43,7 +44,7 @@ io
     /* SYNC users */
     const connectionsRoom = connectionService.filterAllByRoom(user.room, connections);
     socket.in(user.room).emit('SYNC', connectionsRoom);
-    io.of('/api').to(socket.id).emit('SYNC', connectionsRoom);
+    io.of(contextPath).to(socket.id).emit('SYNC', connectionsRoom);
 
     /* Sync board */
     let boardRoom = boardService.filterAllByRoom(user.room, boards);
@@ -75,7 +76,7 @@ io
           boardRoom = JSON.parse(data);
         }
         boards.push(boardRoom);
-        io.of('/api').to(socket.id).emit('SYNC_BOARD', boardRoom);
+        io.of(contextPath).to(socket.id).emit('SYNC_BOARD', boardRoom);
       } else {
       boardService.getREST$(user.room).then(data => {
         data = JSON.parse(data);
@@ -104,12 +105,12 @@ io
           console.log('PARSEADO', boardRoom);
         }
         boards.push(boardRoom);
-        io.of('/api').to(socket.id).emit('SYNC_BOARD', boardRoom);
+        io.of(contextPath).to(socket.id).emit('SYNC_BOARD', boardRoom);
       });
     }
     } else {
       console.log("SYNC_BOARD", boardRoom);
-      io.of('/api').to(socket.id).emit('SYNC_BOARD', boardRoom);
+      io.of(contextPath).to(socket.id).emit('SYNC_BOARD', boardRoom);
     }
   });
 
